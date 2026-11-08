@@ -1,0 +1,47 @@
+project:
+  type: website
+
+website:
+  title: "Data Notes"
+  description: "Practical writing about data science, machine learning, and software."
+
+  navbar:
+    background: "#244f68"
+    foreground: "#ffffff"
+    pinned: true
+    collapse: true
+
+    left:
+      - text: "Latest"
+        href: index.qmd#latest
+      - text: "About"
+        href: about.qmd
+      - text: "Write"
+        href: about.qmd#contact
+
+    right:
+      - icon: github
+        href: https://github.com/YOUR-USERNAME
+        aria-label: GitHub
+
+    search: true
+
+  page-footer:
+    left: "© 2026 Data Notes"
+    right:
+      - text: "About"
+        href: about.qmd
+      - text: "GitHub"
+        href: https://github.com/YOUR-USERNAME
+
+format:
+  html:
+    theme: flatly
+    css: styles.css
+    page-layout: article
+    toc: false
+    code-copy: true
+    code-overflow: wrap
+    smooth-scroll: true
+    anchor-sections: true
+    link-external-newwindow: true

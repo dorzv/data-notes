@@ -1,0 +1,68 @@
+---
+page-layout: full
+
+listing:
+  id: article-listing
+  contents: posts
+  template: article-list.ejs.md
+  sort: "date desc"
+  type: grid
+  grid-columns: 3
+  grid-item-border: false
+  page-size: 12
+  image-height: 250px
+  fields:
+    - image
+    - categories
+    - title
+    - subtitle
+    - reading-time
+    - author
+    - date
+  sort-ui: false
+  filter-ui: [categories]
+---
+
+:::: {.home-hero}
+::: {.home-hero-inner}
+
+<p class="eyebrow">DATA · AI · ENGINEERING</p>
+
+# Ideas, experiments, and practical guides for curious minds.
+
+<p class="home-hero-lede">
+A publication about data science, machine learning, and the tools
+and ideas behind them. Clear explanations, hands-on examples,
+and lessons learned along the way.
+</p>
+
+<div class="home-hero-actions">
+  <a class="hero-button" href="#latest">
+    Explore the latest articles
+  </a>
+
+  <a class="hero-text-link" href="about.qmd">
+    About this site →
+  </a>
+</div>
+
+:::
+::::
+
+:::: {.articles-section}
+
+::: {.section-heading}
+<div>
+  <p class="eyebrow">FRESHLY PUBLISHED</p>
+  <h2 id="latest">Latest articles</h2>
+</div>
+
+<p class="section-description">
+New ideas, tutorials, and deep dives — collected in one place.
+</p>
+:::
+
+::: {#article-listing}
+:::
+
+::::

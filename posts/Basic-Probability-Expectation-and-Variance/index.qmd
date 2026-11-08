@@ -1,0 +1,70 @@
+---
+title: "Basic Probability: Expectation and Variance"
+subtitle: "Introduction to the basic ideas of expectation and variance in probability"
+author: "Dor Zvulun"
+date: "2023-07-18"
+categories:
+  - Probability
+image: cover.webp
+---
+
+
+![Photo by Skitterphoto from [Pexels](https://www.pexels.com/photo/pair-of-white-dice-on-top-of-mirror-705171/)](cover.webp)
+
+Often, when looking at a dataset, it is very useful to extract a few key parameters that can give us a quick insight into our data. Two of those parameters are the expectation (mean) and the variance.
+
+In this article, we focus on discrete random variables, but the main ideas hold for a continuous random variables as well.
+
+## The Expectation
+The expectation is the mean of a random variable. Let’s start by defining it mathematically:
+
+$$
+\mathbb{E}[X] = \sum_{x \in \Omega} x \cdot P(x)
+$$
+
+where X is a discrete random variable, Ω is the sample space, x is a state the random variable X can take, and P(x) is the probability of the outcome x. We can think about this formula as a weighted mean with the probability values as the weights.
+
+We can show that this formula is actually related to the mean by considering the sample mean:
+
+$$
+\text{mean} = \frac{1}{N} \sum_{i=1}^{N} x_i
+$$
+
+For simplicity we assume that xᵢ can take only M values so we can rewrite the formula above as
+
+$$
+\text{mean} = \sum_{n=1}^{M} x^{(n)} \times \frac{\text{number of times } x^{(n)} \text{ appears in the data}}{N}
+$$
+
+where the expression in the fraction is the percentage of each of the M values in the dataset, which can be seen as the probability of getting each value. That’s exactly the definition of the expectation as in the first equation.
+
+Even so, there is a fundamental difference between the expection value and the sample mean. The sample mean is the empirical mean we get from the data we have. The expectation value, however, is the theoretical mean we will have from the ideal sample (or the “real” data distribution).
+
+## Properties of the Expectation
+1. Expectation of a function of a random variable:  
+$$
+E\left[g(x)\right] = \sum_{x\in \Omega} g(x)P(x)
+$$
+**Hand-waving proof:**
+Applying the function g() on x changes the value, but does not change the probability to get the new value. It is still the same probability of getting x, and so the probability of getting g(x) is the same as in the regular case of x.
+
+2. Linearity:
+$$
+\mathbb{E}[g(X) + h(X)] = \mathbb{E}[g(X)] + \mathbb{E}[h(X)]
+$$
+**proof:**:
+$$
+\begin{aligned}
+E[g(X) + h(X)] &= \sum (g(X) + h(X))P(X) \\
+&= \sum (g(X)P(X) + h(X)P(X)) \\
+&= \sum g(X)P(X) + \sum h(X)P(X) \\
+&= E[g(X)] + E[h(X)]
+\end{aligned}
+$$
+3. Scale by constant:
+
+**proof:**:
+
+4. DC shift:
+
+**proof:**:

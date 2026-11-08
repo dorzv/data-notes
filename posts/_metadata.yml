@@ -1,0 +1,9 @@
+author: "Your Name"
+
+format:
+  html:
+    page-layout: article
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
