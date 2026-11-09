@@ -1,5 +1,6 @@
 ---
 title: "pathlib — a Better Way to Work with Paths in Python"
+subtitle: "Time to upgrade your path handling in Python"
 author: "Dor Zvulun"
 date: "2023-07-19"
 categories: [Python]
