@@ -26,9 +26,9 @@ listing:
 :::: {.home-hero}
 ::: {.home-hero-inner}
 
-<p class="eyebrow">DATA · AI · ENGINEERING</p>
+<p class="eyebrow">DATA · AI · Computer Vision</p>
 
-# Ideas, experiments, and practical guides for curious minds.
+## Ideas, experiments, and practical guides for curious minds.
 
 <p class="home-hero-lede">
 A publication about data science, machine learning, and the tools
