@@ -12,7 +12,6 @@ image: cover.webp
 
 <figure>
   <img src="cover.webp" alt="Pair of white dice on a mirror">
-
   <figcaption>
     Photo by
     <a href="https://www.pexels.com/photo/pair-of-white-dice-on-top-of-mirror-705171/">
