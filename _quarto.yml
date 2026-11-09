@@ -1,6 +1,9 @@
 project:
   type: website
 
+editor:
+  render-on-save: true
+
 website:
   title: "Data Notes"
   description: "Practical writing about data science, machine learning, and software."
