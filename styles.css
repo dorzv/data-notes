@@ -561,6 +561,23 @@ body {
   text-decoration: underline;
 }
 
+/* Prevent Quarto code blocks from wrapping */
+div.sourceCode {
+  overflow-x: auto;
+}
+
+div.sourceCode pre,
+div.sourceCode pre code,
+div.sourceCode pre code span {
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+div.sourceCode pre {
+  overflow-x: auto;
+}
+
 /* Responsive layout */
 @media (max-width: 900px) {
   .article-grid {
