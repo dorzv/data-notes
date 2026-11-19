@@ -3,7 +3,7 @@ title: "Visual Transformer (ViT)"
 subtitle: "An introduction to the Visual Transformer architecture, its main ideas and implementation."
 author: "Dor Zvulun"
 date: "2024-08-30"
-categories: [Computer Vision, Deep Learning, Python, Machine Learning, Data Science]
+categories: [Computer Vision, Deep Learning, Python]
 image: "images/001.webp"
 ---
 

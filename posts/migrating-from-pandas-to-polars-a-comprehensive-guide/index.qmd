@@ -4,7 +4,7 @@ subtitle: "Discovering the Benefits of Polars over Pandas"
 author: "Dor Zvulun"
 date: "2025-03-29"
 categories: [Data Science, Pandas, Python]
-image: "images/001.webp"
+image: "images/cover.webp"
 
 ---
 
