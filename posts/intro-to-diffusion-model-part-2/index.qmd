@@ -1,0 +1,124 @@
+---
+title: "Intro to Diffusion Model — Part 2"
+subtitle: "Part 2 of a series of posts about the diffusion model. In this post, we will go over the mathematics that describe the forward and reverse processes of the diffusion model."
+author: "Dor Zvulun"
+date: "2023-09-09"
+categories: [Computer Vision, Artificial Intelligence, Machine Learning]
+---
+
+This post is part of a series of posts about diffusion models:
+
+* [Intro to Diffusion Model — Part 1](../intro-to-diffusion-model-part-1/index.qmd)
+* [Intro to Diffusion Model — Part 2](../intro-to-diffusion-model-part-2/index.qmd) (this post)
+* [Intro to Diffusion Model — Part 3](../intro-to-diffusion-model-part-3/index.qmd)
+* [Intro to Diffusion Model — Part 4](../intro-to-diffusion-model-part-4/index.qmd)
+* [Intro to Diffusion Model — Part 5](../intro-to-diffusion-model-part-5/index.qmd)
+* [Intro to Diffusion Model — Part 6](../intro-to-diffusion-model-part-6/index.qmd)
+* [Intro to Diffusion Model — Part 7](../intro-to-diffusion-model-part-7/index.qmd)
+* [Full implementation](https://github.com/dorzv/ComputerVision/blob/master/Diffusion/Diffusion.ipynb)
+
+In the previous post, the key ideas of the diffusion model, such as denoising, forward process, and reverse process, were introduced. Now, it’s time to move from a general intuitive description into a more formal mathematical one.
+
+In this post, we are going to base on the paper “[Denoising Diffusion Probabilistic Models](https://arxiv.org/pdf/2006.11239.pdf)” (or DDPM for short) for the mathematical formulation.
+
+Let’s start with indexing the steps in the processes. We define a process to have $T$ time steps, where $T$ is some big integer (for example, in the DDPM they use $T = 1000$). The first step, where we have the original image without any noise, is at $t = 0$, and we mark that image as $\mathbf{x}_0$. In the following steps, we add noise to the image, so for a large enough $T$, we will get a complete noise.
+
+The original images (those without noise) come from a distribution of “real data”, so we can write it mathematically as $\mathbf{x}_0 \sim q(\mathbf{x}_0)$. In the forward diffusion process at a time $t$, we want to sample a new noisy image based on the noisy image at the previous step $t-1$, which means $q(\mathbf{x}_t \mid \mathbf{x}_{t-1})$. In the case of the diffusion model, in each time step, we add Gaussian noise to the image according to some known variance schedule $0 < \beta_1 < \dots < \beta_T < 1$ where
+
+$$
+q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) = \mathcal{N}(\mathbf{x}_t; \sqrt{1 - \beta_t}\mathbf{x}_{t-1}, \beta_t\mathbf{I})
+$$
+
+The above equation means that the image at time step $t$ is sampled from a normal distribution with a mean of $\mu = \sqrt{1-\beta_t}\mathbf{x}_{t-1}$ (i.e., depends on the values of the image at the previous step, which we assume to know), and a variance of $\sigma^2 = \beta_t$ ($\mathbf{I}$ is the identity matrix, which means that the distribution of the noise in the different parts of the image is independent of each other).
+
+The complete forward process can be described by the following equation
+
+$$
+q(\mathbf{x}_{1:T} \mid \mathbf{x}_0) = \prod_{t=1}^{T} q(\mathbf{x}_t \mid \mathbf{x}_{t-1})
+$$
+
+Now pay attention to this. We can write $\mathbf{x}_t$ as follows:
+
+$$
+\mathbf{x}_t = \sqrt{1 - \beta_t}\mathbf{x}_{t-1} + \sqrt{\beta_t}\boldsymbol{\epsilon}; \quad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})
+$$
+
+Why can we write it that way? Let’s assume $X$ is a random variable sampled from a normal distribution with mean $\mu = 0$ and variance $\sigma^2 = 1$. Now let’s define a new variable $Y = \mu + \sigma X$. Let’s check what the expectation value and the variance of $Y$ are.
+
+$$
+\begin{aligned}
+E[Y] &= E[\mu + \sigma X] = E[\mu] + \sigma E[X] = \mu + \sigma \cdot 0 = \mu \\
+Var[Y] &= Var[\mu + \sigma X] = Var[\sigma X] = \sigma^2 Var[X] = \sigma^2
+\end{aligned}
+$$
+
+If you are not sure why the equations above are true, you can check out this [post](../basic-Probability-Expectation-and-Variance/index.qmd) about the expectation and variance. The last results show that $Y$ is also a Gaussian random variable (since $X$ is) but with a mean $\mu$ and variance $\sigma^2$. As for our equation for $\mathbf{x}_t$, by the same principles, $\mathbf{x}_t$ is a Gaussian random variable (or a vector actually) with a mean of $\sqrt{1-\beta_t}\mathbf{x}_{t-1}$ (we assume we know $\mathbf{x}_{t-1}$ as we deal with conditional probability) and variance of $\beta_t$, which is exactly what we wrote in the first equation.
+
+Although we found an equation for $\mathbf{x}_t$, we still need to calculate all the previous times since the equation is dependent on $\mathbf{x}_{t-1}$, and for calculating it, we need the previous time and so on, until $\mathbf{x}_0$. We can do better, but first, we need to introduce new notations.
+
+$$
+\alpha_t = 1 - \beta_t \quad \bar{\alpha}_t = \prod_{i=1}^{t} \alpha_i = \alpha_1 \cdot \alpha_2 \cdot \dots \cdot \alpha_t
+$$
+
+So we can rewrite $\mathbf{x}_t$ equation as:
+
+$$
+\mathbf{x}_t = \sqrt{\alpha_t}\mathbf{x}_{t-1} + \sqrt{1 - \alpha_t}\boldsymbol{\epsilon}
+$$
+
+Now, let’s calculate the expectation and variance of $\mathbf{x}_t$
+
+$$
+\begin{aligned}
+E[\mathbf{x}_t] &= \sqrt{\alpha_t}E[\mathbf{x}_{t-1}] + \sqrt{1 - \alpha_t}\underbrace{E[\boldsymbol{\epsilon}]}_{0} \\
+&= \sqrt{\alpha_t}E[\sqrt{\alpha_{t-1}}\mathbf{x}_{t-2} + \sqrt{1 - \alpha_{t-1}}\boldsymbol{\epsilon}] \\
+&= \sqrt{\alpha_t \alpha_{t-1}}E[\mathbf{x}_{t-2}] \\
+&\quad \vdots \\
+&= \sqrt{\alpha_t \alpha_{t-1}\dots\alpha_1}E[\mathbf{x}_0] \\
+&= \sqrt{\bar{\alpha}_t}\mathbf{x}_0
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+Var[\mathbf{x}_t] &= \alpha_t Var[\mathbf{x}_{t-1}] + (1 - \alpha_t) \underbrace{Var[\boldsymbol{\epsilon}]}_{\mathbf{I}} \\
+&= \alpha_t Var[\sqrt{\alpha_{t-1}}\mathbf{x}_{t-2} + \sqrt{1 - \alpha_{t-1}}\boldsymbol{\epsilon}] + (1 - \alpha_t)\mathbf{I} \\
+&= \alpha_t \alpha_{t-1} Var[\mathbf{x}_{t-2}] + \alpha_t(1 - \alpha_{t-1})\mathbf{I} + (1 - \alpha_t)\mathbf{I} \\
+&= \alpha_t \alpha_{t-1} Var[\mathbf{x}_{t-2}] + (1 - \alpha_t \alpha_{t-1})\mathbf{I} \\
+&\quad \vdots \\
+&= \bar{\alpha}_t Var[\mathbf{x}_0] + (1 - \bar{\alpha}_t)\mathbf{I} \\
+&= (1 - \bar{\alpha}_t)\mathbf{I}
+\end{aligned}
+$$
+
+So we can write $\mathbf{x}_t$ directly in terms of $\mathbf{x}_0$:
+
+$$
+\mathbf{x}_t = \sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}
+$$
+
+This was the forward process that let us go from the original image $\mathbf{x}_0$, up to a complete noise image step by step. But what we really want to know is the reverse process or how we can go from noise to an image. This process can be described in a similar way (but in the opposite direction) to the first equation of the forward process:
+
+$$
+p_\theta(\mathbf{x}_{0:T}) = p(\mathbf{x}_T) \prod_{t=1}^{T} p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)
+$$
+
+when we start from an isotropic Gaussian noise image such that
+
+$$
+p(\mathbf{x}_T) = \mathcal{N}(\mathbf{x}_T; \mathbf{0}, \mathbf{I})
+$$
+
+If we can find the conditional distribution $p(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, we can reverse the process and go from a sample of noise $\mathbf{x}_T$ and gradually remove the noise until we end up with an image from the real data distribution $\mathbf{x}_0$.
+
+The problem, of course, is that we don’t know that distribution, but we can still try to estimate it using a neural network. For the estimation, we replace the original unknown distribution $p(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, with parametric one $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$, where $\theta$ is the network’s parameters.
+
+As we deal with Gaussian distributions, $p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t)$ can be fully described by a mean and a variance so we can parameterize it as
+
+$$
+p_\theta(\mathbf{x}_{t-1} \mid \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
+$$
+
+the conditional part comes from the dependency of $\mu$ and $\Sigma$ of the data from the previous step $\mathbf{x}_t$ at time step $t$. However, we can make an assumption for our model and make it simpler by deciding that the variance is not a parameter the network needs to learn (that assumption follows the DDPM paper, but in later works such as “[Improved Denoising Diffusion Probabilistic Models](https://openreview.net/pdf?id=-NEXDKk8gZ)” they also learn the variance).
+
+In the next post, we are going to see how we can define a cost function to use with the neural network to learn the mean.

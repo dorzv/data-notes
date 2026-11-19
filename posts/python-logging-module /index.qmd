@@ -1,0 +1,317 @@
+---
+title: "Python Logging Module"
+subtitle: "A better way to debug and track errors."
+author: "Dor Zvulun"
+date: "2023-11-09"
+categories: [Python]
+image: images/001.webp
+---
+
+<figure>
+  <img src="images/001.webp" alt="Diary, girl, hand, journal">
+  <figcaption>
+    Photo by Pixabay from
+    <a href="https://www.pexels.com/photo/diary-girl-hand-journal-261735/">
+      Pexels
+    </a>
+  </figcaption>
+</figure>
+
+When we develop a program, it can be very convenient if we can easily track the operations of the code. Such tracking can be made using a log that documents significant events that happened during the execution of the code.
+
+Luckily, Python has a logging module as part of its standard library. This module can help us to log events in the program, print them to the console, and save them into a log file.
+
+## The Basics of the Logging Module
+
+To add logging capability to our code, all we need to do is import the built-in logging module.
+
+```python
+import logging
+```
+
+The logging module lets us use the "logger" object to start logging information. By default, the logger has 5 levels of severity of the event. The severity in increasing order are:
+
+* DEBUG
+* INFO
+* WARNING
+* ERROR
+* CRITICAL
+
+To log an event into the console we can use the logging module (with the default logger) and call it with one of the severity levels.
+
+```python
+import logging
+
+logging.debug('Debug message')
+logging.info('Info message')
+logging.warning('Warning message')
+logging.error('Error message')
+logging.critical('Critical message')
+
+#### output to console ####
+# WARNING:root:Warning message
+# ERROR:root:Error message
+# CRITICAL:root:Critical message
+
+```
+
+The default log message of the logger is in the format of *(severity levels):(logger name):(message)*. The default logger is called root as we can see in the example. Later we see how to change the format.
+
+In the above example, we can see that although we called the logger with the *debug* and *info* method, only the warning error and critical were outputted. That is because only events of the severity level of warning and above get logged by default.
+
+We can change the default behavior by using the `basicConfig()` method. For example, if we want to log events of *debug* and *info* too, we can set the severity level to *debug*.
+
+```python
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logging.debug('Debug message')
+logging.info('Info message')
+
+#### output to console ####
+# DEBUG:root:Debug message
+# INFO:root:Info message
+
+```
+
+The `basicConfig()` method can also set a file to which the logs will be outputted (instead of the console), the file mode (rewrite the file in each new session ('w' mode) or append to an existing file ('a' mode, default), and the format of the message. For example, we can use a file called "my_log.log" with mode "w" (to write a new file) and message of the format *(event time) --- (severity levels) --- (message)*.
+
+```python
+import logging 
+logging.basicConfig(filename='my_log.log', filemode='w', format='%(asctime)s - %(message)s')
+logging.warning('warning message')
+
+#### in file my_file.log ####
+# 2023-11-09 08:47:19,606 - Warning message
+```
+
+We can change the time format with `datefmt`.
+
+```python
+import logging 
+logging.basicConfig(filename='my_log.log', filemode='w', format='%(asctime)s - %(message)s', datefmt='%d-%m-%y %H:%M:%S')
+logging.warning('warning message')
+
+#### in file my_file.log ####
+# 09-11-23 08:50:35 - warning message
+```
+
+[Here](https://docs.python.org/3/library/logging.html#logrecord-attributes) you can find more attributes for the format of the message.
+
+Another useful feature of the logging module is to capture exception information. When an error occurs and we catch it in an Exception block, we can log the full information of it.
+
+```python
+import logging
+a = 1
+
+try:
+    c = a + b
+except Exception as e:
+    logging.exception("In exception")
+
+#### output ####
+# ERROR:root:In exception
+# Traceback (most recent call last):
+#   File "/home/dor/PycharmProjects/pythonProject/revisit_observatory/temp.py", line 27, in <module>
+#     c = a + b
+#             ^
+# NameError: name 'b' is not defined
+```
+
+The `exception()` method uses the *error* severity level. If we want to use it with another level we can set the `exc_info` parameter to True.
+
+```python
+import logging
+a = 1
+
+try:
+    c = a + b
+except Exception as e:
+    logging.warning("In exception", exc_info=True)
+
+#### output ####
+# WARNING:root:In exception
+# Traceback (most recent call last):
+#   File "/home/dor/PycharmProjects/pythonProject/revisit_observatory/temp.py", line 27, in <module>
+#     c = a + b
+#             ^
+# NameError: name 'b' is not defined
+```
+
+## More Advanced Uses
+
+Although the default logger can help us in most of the logging tasks, we may want to define our own logger. We can create a new logger with the name "my_logger" as follows.
+
+```python
+import logging
+logger = logging.getLogger('my_logger')
+logger.warning('Warning message')
+
+#### output ####
+# Warning message
+```
+
+Notice that this time only the message was outputted. If we want a format like the default logger we will need to use handlers and formatters.
+
+```python
+import logging
+logger = logging.getLogger('my_logger')
+
+handler = logging.StreamHandler()
+handler.setLevel(logging.WARNING)
+formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+handler.setFormatter(formatter)
+
+logger.addHandler(handler)
+
+logger.warning('Warning message')
+
+#### output ####
+# WARNING:my_logger:Warning message
+```
+
+We can see that instead of "root" we have now our logger name "my_logger". We can make a similar example for writing to a file. Moreover, we can set two handlers for our logger with different properties. For example, we can set the logger to print to the console all severity levels, and write in a file only logs with severity of error and above.
+
+```python
+import logging
+logger = logging.getLogger('my_logger')
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_formatter = logging.Formatter('%(levelname)s:%(name)s:%(message)s')
+console_handler.setFormatter(console_formatter)
+
+file_handler = logging.FileHandler(filename='my_log.log', mode='w')
+file_handler.setLevel(logging.ERROR)
+file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
+logger.warning('Warning message')
+logger.critical('Critical message')
+
+#### console output ####
+# WARNING:my_logger:Warning message
+# CRITICAL:my_logger:Critical message
+
+#### my_log.log file output ####
+# 2023-11-09 09:12:48,919 - CRITICAL - Critical message
+```
+
+Instead of defining the handler in the code, the logging module lets us use a dictionary with the settings for the logger (there is also an option to use a configuration file, but the dictionary is considered the modern way). We can recreate the above example using a dictionary.
+
+```python
+import logging
+from logging import config
+
+log_config = {
+    "version": 1,
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "DEBUG"
+    },
+    "handlers": {
+        "console": {
+            "formatter": "console_format",
+            "class": "logging.StreamHandler",
+            "level": "DEBUG"
+        },
+        "file": {
+            "formatter": "file_format",
+            "class": "logging.FileHandler",
+            "level": "ERROR",
+            "filename": "my_log.log",
+            "mode": "w"
+        }
+    },
+    "formatters": {
+        "console_format": {
+            "format": "%(levelname)s:%(name)s:%(message)s"
+        },
+        "file_format": {
+            "format": "%(asctime)s - %(levelname)s - %(message)s",
+        }
+    },
+}
+
+config.dictConfig(log_config)
+logger = logging.getLogger('my_logger')
+logger.warning('Warning message')
+logger.critical('Critical message')
+
+#### console output ####
+# WARNING:my_logger:Warning message
+# CRITICAL:my_logger:Critical message
+
+#### my_log.log file output ####
+# 2023-11-09 09:17:13,784 - CRITICAL - Critical message
+```
+
+The dictionary must contain the version key, and for now, it must be 1, but in the future other versions may be included. The root key is for the default behavior of a general logger, but we can also add more loggers for some specific behavior.
+
+```python
+import logging
+from logging import config
+
+log_config = {
+    "version": 1,
+    "root": {
+        "handlers": ["console1", "file"],
+        "level": "DEBUG"
+    },
+    "loggers": {
+            "my_logger": {
+                "handlers": ["console2"],
+                "level": "DEBUG",
+                "propagate": False
+            }
+        },
+    "handlers": {
+        "console1": {
+            "formatter": "console_format",
+            "class": "logging.StreamHandler",
+            "level": "DEBUG"
+        },
+        "console2": {
+            "formatter": "console_format",
+            "class": "logging.StreamHandler",
+            "level": "ERROR"
+        },
+        "file": {
+            "formatter": "file_format",
+            "class": "logging.FileHandler",
+            "level": "ERROR",
+            "filename": "my_log.log",
+            "mode": "w"
+        }
+    },
+    "formatters": {
+        "console_format": {
+            "format": "%(levelname)s:%(name)s:%(message)s"
+        },
+        "file_format": {
+            "format": "%(asctime)s - %(levelname)s - %(message)s",
+        }
+    },
+}
+
+config.dictConfig(log_config)
+logger = logging.getLogger('main')
+my_logger = logging.getLogger('my_logger')
+logger.warning('Warning message')
+logger.critical('Critical message')
+my_logger.debug('DEBUG my_logger message')
+my_logger.error('ERROR my_logger message')
+
+
+#### console output ####
+# WARNING:main:Warning message
+# CRITICAL:main:Critical message
+# ERROR:my_logger:ERROR my_logger message
+
+#### my_log.log file output ####
+# 2023-11-09 09:20:21,020 - CRITICAL - Critical message
+
+```

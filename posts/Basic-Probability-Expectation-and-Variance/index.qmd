@@ -25,7 +25,7 @@ Often, when looking at a dataset, it is very useful to extract a few key paramet
 
 In this article, we focus on discrete random variables, but the main ideas hold for a continuous random variables as well.
 
-# The Expectation
+## The Expectation
 The expectation is the mean of a random variable. Let’s start by defining it mathematically:
 
 $$
@@ -50,7 +50,7 @@ where the expression in the fraction is the percentage of each of the $M$ values
 
 Even so, there is a fundamental difference between the expection value and the sample mean. The sample mean is the empirical mean we get from the data we have. The expectation value, however, is the theoretical mean we will have from the ideal sample (or the “real” data distribution).
 
-## Properties of the Expectation
+### Properties of the Expectation
 1. **Expectation of a function of a random variable:**
 $$
 \mathbb{E}\left[g(x)\right] = \sum_{x\in \Omega} g(x)P(x)
@@ -93,7 +93,7 @@ while in the last step we used the fact that the sum of probabilities over all t
 
 <p style="text-align: center; font-size: 2em;">· · ·</p>
 
-# The Variance
+## The Variance
 The variance of a random variable X is given by:
 $$
 \text{Var}[X] = \sigma^2 = \mathbb{E}[(X - \mu)^2]
@@ -120,7 +120,7 @@ $$
 
 The square root of the variance is called the standard deviation and is written as $\sigma$. $\sigma$, as opposed to the variance — σ², has the same units as the expectation value.
 
-## Properties of the Variance
+### Properties of the Variance
 1. **Scale by constant:**
 $$
 \text{Var}[\alpha X] = \alpha^2 \text{Var}[X]

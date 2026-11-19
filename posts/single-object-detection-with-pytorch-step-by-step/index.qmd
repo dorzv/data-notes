@@ -30,7 +30,7 @@ In the task of object detection, we want to find the location of an object in an
 
 In this tutorial, we focus on finding the center of the [fovea](https://en.wikipedia.org/wiki/Fovea_centralis) in medical eye images from the [iChallenge-AMD](https://amd.grand-challenge.org/) competition.
 
-# Getting the Data
+## Getting the Data
 
 We are going to work with eye images of Age-related Macular degeneration (AMD) patients.
 
@@ -45,7 +45,7 @@ There are two main resources to get the data. The first one is the iChallenge-AM
 
 After downloading the data and extracting it, you should have a folder *Training400* with the subfolders *AMD* (with 89 images) and *Non-AMD* (with 311 images) and an Excel file *Fovea_location.xlsx* that contains the center location of the fovea in each image.
 
-# Exploring the Data
+### Exploring the Data
 
 Let’s start by loading the Excel file using Pandas
 
@@ -170,7 +170,7 @@ sns.histplot(x=widths, hue=amd_or_non_amd)
   <img src="images/007.webp" alt="Histogram of image widths">
 </figure>
 
-# Data Augmentation and Transformation
+## Data Augmentation and Transformation
 
 Data augmentation is a very important step that lets us extend our dataset (especially when we have a small dataset, as in our case) and make the network more robust. We also want to apply some transformations to make the input to the network consistent (in our case, we need to resize the images so they have constant dimensions).
 
@@ -355,7 +355,7 @@ show_image_with_bounding_box(new_image, new_label)
   <img src="images/008.webp" alt="Transformed eye image with bounding box">
 </figure>
 
-# Making the Dataset and DataLoader
+## Making the Dataset and DataLoader
 
 To load the data into our model, we need first to build a custom Dataset class (which is a subclass of PyTorch Dataset class). For that, we need to implement three methods:
 
@@ -445,7 +445,7 @@ print(labels_batch, labels_batch.dtype)
 #         [0.5828, 0.4034]], device='cuda:0') torch.float32
 ```
 
-# Building the Model
+## Building the Model
 
 We want to build a model that gets a resized RGB image and returns two values for the x and y coordinates. We are going to use residual blocks in a similar way to ResNet using a skip connection. We start by defining the basic res-block
 
@@ -520,7 +520,7 @@ summary(model=net,
   <img src="images/011.webp" alt="Torchinfo model summary">
 </figure>
 
-# Loss and Optimizer
+## Loss and Optimizer
 
 We start by defining the loss function using the [smooth L1 loss](https://pytorch.org/docs/stable/generated/torch.nn.SmoothL1Loss.html). In general, this loss behaves like L2 when the absolute difference is less than 1, and like L1 otherwise.
 
@@ -573,7 +573,7 @@ def batch_loss(loss_func, output, target, optimizer=None):
   return loss.item(), iou_metric
 ```
 
-# Training the Model
+## Training the Model
 
 In this step, we are going to train our model to find the fovea. We start by defining a helper function to make a training step, which means going over all the data in a Dataloader, getting the loss (and updating the weights in the training case) using our previous function `batch_loss`, and track the loss and IoU metric.
 
@@ -693,7 +693,7 @@ for ii, id in enumerate(indexes, 1):
   <img src="images/015.webp" alt="Final predictions comparison grid">
 </figure>
 
-# Conclusion
+## Conclusion
 
 In this tutorial, we went over all the main steps needed to build a network for a single object detection task. We started by exploring the data, cleaning and arranging it, then built data augmentation functions and Dataset and DataLoader objects, and finally built and trained the model. We got relatively good results, and you are welcome to try and improve the performance by changing the model's learning parameters and architecture.
 

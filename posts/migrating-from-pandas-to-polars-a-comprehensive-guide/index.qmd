@@ -1,0 +1,271 @@
+---
+title: "Migrating from Pandas to Polars: A Comprehensive Guide"
+author: "Dor Zvulun"
+date: "2025-03-29"
+categories: [Data Science, Pandas, Python]
+---
+
+<figure>
+  <img src="images/001.webp" alt="Migrating from Pandas to Polars: A Comprehensive Guide">
+</figure>
+
+## Introduction
+
+Pandas has been the go-to library for data manipulation in Python for over a decade. It is powerful, flexible, and widely used in data science, machine learning, and analytics. However, as datasets grow in size, Pandas often struggles with performance due to its reliance on single-threaded execution and memory-intensive operations.
+
+Polars, a relatively new DataFrame library, aims to address these limitations. Built using Rust, Polars is designed for speed and efficiency. It offers multi-threaded execution, a powerful query engine, and memory-efficient operations, making it an excellent alternative to Pandas for large-scale data processing.
+
+In this post, we will explore the key advantages of Polars over Pandas and demonstrate how to migrate common Pandas operations to Polars.
+
+## Why Polars?
+
+### 1. Performance
+
+Polars leverages Rust and Arrow memory format to enable lightning-fast computations. It is optimized for multi-threading, allowing it to outperform Pandas significantly on large datasets.
+
+### 2. Memory Efficiency
+
+Unlike Pandas, which often requires large amounts of memory, Polars employs zero-copy operations and efficient memory layouts, reducing RAM usage considerably.
+
+### 3. Lazy Execution
+
+Polars supports lazy execution, which allows it to optimize query plans before execution, making it better for complex operations on big data.
+
+### 4. Better API Design
+
+Polars enforces stricter data types and provides a more functional API, reducing common issues like unintended type conversions and silent data corruption.
+
+Now, let’s dive into how to migrate common Pandas operations to Polars.
+
+## Migrating from Pandas to Polars
+
+### 1. Installation
+
+Before we start, install Polars using:
+
+```bash
+pip install polars
+```
+
+Then, import the libraries:
+
+```python
+import pandas as pd
+import polars as pl
+```
+
+### 2. Creating DataFrames
+
+**Pandas**
+
+```python
+df_pd = pd.DataFrame({
+    "name": ["Alice", "Bob", "Charlie"],
+    "age": [25, 30, 35],
+    "salary": [50000, 60000, 70000]
+})
+```
+
+**Polars**
+
+```python
+df_pl = pl.DataFrame({
+    "name": ["Alice", "Bob", "Charlie"],
+    "age": [25, 30, 35],
+    "salary": [50000, 60000, 70000]
+})
+```
+
+### 3. Data Inspection
+
+**Pandas**
+
+```python
+df_pd.info()
+df_pd.describe()
+```
+
+**Polars**
+
+```python
+df_pl.schema  # Shows data types
+df_pl.describe()
+```
+
+Polars’ `.schema` replaces `.info()` and `.describe()` provides statistical summaries.
+
+### 4. Selecting Columns
+
+**Pandas**
+
+```python
+df_pd["name"]
+df_pd[["name", "salary"]]
+```
+
+**Polars**
+
+```python
+df_pl["name"]  # Series output
+df_pl.select(["name", "salary"])  # DataFrame output
+```
+
+In Polars, `.select()` is preferred for multi-column selection.
+
+### 5. Filtering Rows
+
+**Pandas**
+
+```python
+df_pd[df_pd["age"] > 28]
+```
+
+**Polars**
+
+```python
+df_pl.filter(pl.col("age") > 28)
+```
+
+Polars uses expressions like `pl.col("age")` for filtering.
+
+### 6. Adding New Columns
+
+**Pandas**
+
+```python
+df_pd["bonus"] = df_pd["salary"] * 0.1
+```
+
+**Polars**
+
+```python
+df_pl = df_pl.with_columns((pl.col("salary") * 0.1).alias("bonus"))
+```
+
+Polars uses `.with_columns()` to add new columns.
+
+### 7. Applying Functions
+
+Applying the following function on the salary column.
+
+```python
+def categorize_salary(salary):
+    if salary > 60000:
+        return "High"
+    elif salary > 50000:
+        return "Medium"
+    else:
+        return "Low"
+```
+
+**Pandas**
+
+```python
+df_pd["salary_category"] = df_pd["salary"].apply(categorize_salary)
+```
+
+**Polars**
+
+```python
+df_pl = df_pl.with_columns(
+    pl.when(pl.col("salary") > 60000)
+    .then(pl.lit("High"))
+    .when(pl.col("salary") > 50000)
+    .then(pl.lit("Medium"))
+    .otherwise(pl.lit("Low"))
+    .alias("salary_category")
+)
+```
+
+Polars avoids `.apply()` whenever possible, replacing it with efficient vectorized expressions like `when().then().otherwise()`.
+
+### 8. Grouping and Aggregations
+
+**Pandas**
+
+```python
+df_pd.groupby("age")["salary"].mean()
+```
+
+**Polars**
+
+```python
+df_pl.group_by("age").agg(pl.col("salary").mean())
+```
+
+Polars’ `.agg()` method explicitly defines aggregations.
+
+### 9. Sorting
+
+**Pandas**
+
+```python
+df_pd.sort_values(by="salary", ascending=False)
+```
+
+**Polars**
+
+```python
+df_pl.sort("salary", descending=True)
+```
+
+### 10. Merging DataFrames
+
+**Pandas**
+
+```python
+df2_pd = pd.DataFrame({"name": ["Alice", "Bob"], "department": ["HR", "Engineering"]})
+df_merged = df_pd.merge(df2_pd, on="name", how="left")
+```
+
+**Polars**
+
+```python
+df2_pl = pl.DataFrame({"name": ["Alice", "Bob"], "department": ["HR", "Engineering"]})
+df_merged = df_pl.join(df2_pl, on="name", how="left")
+```
+
+Polars replaces `.merge()` with `.join()`.
+
+### 11. Handling Missing Values
+
+**Pandas**
+
+```python
+df_pd.fillna(0)
+df_pd.dropna()
+```
+
+**Polars**
+
+```python
+df_pl.fill_null(0)
+df_pl.drop_nulls()
+```
+
+Polars uses `.fill_null()` instead of `.fillna()` and `drop_nulls()` instead of `dropna()`.
+
+### 12. Lazy Execution for Big Data
+
+One of Polars’ biggest advantages is **lazy execution**, which optimizes query plans before execution.
+
+```python
+lazy_df = df_pl.lazy()
+lazy_df = lazy_df.filter(pl.col("salary") > 55000)
+lazy_df.collect()  # Executes the query
+```
+
+Lazy execution helps process large datasets efficiently. Lazy operations in Polars **are not in place**, so you must assign the result to a new variable or overwrite the original one because `.collect()` returns a **new DataFrame** and does not modify the original `LazyFrame`.
+
+## Conclusion
+
+Migrating from Pandas to Polars provides significant performance and efficiency gains, especially for large datasets. With multi-threading, better memory management, and an optimized query engine, Polars is a strong alternative for data manipulation.
+
+### Key Takeaways
+
+* **Polars is much faster** due to multi-threading and Rust optimizations.
+* **Memory usage is lower**, making it suitable for big data.
+* **Stronger type enforcement** reduces unexpected bugs.
+* **Lazy execution** optimizes queries before execution.
+
+While Pandas remains a powerful tool for data analysis, Polars is a compelling choice for those seeking better performance. If you’re working with large-scale data, Polars might be the better solution.

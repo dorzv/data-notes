@@ -1,0 +1,130 @@
+---
+title: "Five Fun and Interesting Behaviors of Python"
+subtitle: "In this post, we are going to look at some interesting and sometimes surprising behaviors of the Python language."
+author: "Dor Zvulun"
+date: "2023-08-29"
+categories: [Python]
+image: "images/001.webp"
+---
+
+<figure>
+  <img src="images/001.webp" alt="Photo by Christina Morillo from Pexels">
+  <figcaption>
+    Photo by Christina Morillo from Pexels
+  </figcaption>
+</figure>
+
+## Double Underscore in Attribute Names
+
+What is the following output?
+
+```python
+class Person:
+  def __init__(self, id_number):
+    self.__id_number = id_number
+
+  def print_id(self):
+    print(self.__id_number)
+
+p = Person(138)
+p.print_id()
+print(p.__id_number)
+```
+
+### Answer
+
+First, we see the number “138” printed to the console as a result of `p.print_id()` but then an error will be raised — “AttributeError: 'Person' object has no attribute '__id_number'”.
+
+Why does it happen? We defined the attribute `__id_number` and even used it while calling the method `print_id()`. To understand that, let’s look at the attributes of `Person`. For that, we can use the `__dir__()` method
+
+```python
+print(p.__dir__())
+
+# ['_Person__id_number', '__module__', '__init__', 'print_id',
+#  '__dict__', '__weakref__', '__doc__', '__annotations__', 
+#  '__new__', '__repr__', '__hash__', '__str__', '__getattribute__', 
+#  '__setattr__', '__delattr__', '__lt__', '__le__', '__eq__', '__ne__',
+#  '__gt__', '__ge__', '__reduce_ex__', '__reduce__', '__subclasshook__', 
+#  '__init_subclass__', '__format__', '__sizeof__', '__dir__', '__class__']
+```
+
+You can see there is no attribute `__id_number` but there is `_Person__id_number`. If you use a double underscore before an attribute in a class, Python will add an underscore together with the class name before the attribute name. From inside the class, you can still use the original name, but from the outside, the real name is now with the name of the class before the original one.
+
+## Lists References
+
+What does this code output?
+
+```python
+mat = 3 * [[1, 2, 3]]
+mat[1][1] = 'a'
+print(mat)
+```
+
+### Answer
+
+The output is `[[1, 'a', 3], [1, 'a', 3], [1, 'a', 3]]`. While multiplying lists, Python does not copy the list to a new list but uses a reference to the original list. This means all three lists are at the same location in memory. You can check this using the `id()` function
+
+```python
+mat = 3 * [[1, 2, 3]]
+print(id(mat[0]))
+print(id(mat[1]))
+print(mat[0] is mat[1])
+
+# 4339860928
+# 4339860928
+# True
+```
+
+So, when we change the value in the second list, we actually change it for all the lists since they all point to the same location in memory.
+
+If you do want a copy of the list, you can use list comprehension, for example.
+
+```python
+mat = [[1, 2, 3] for i in range(3)]
+mat[1][1] = 'a'
+print(mat)
+
+# [[1, 2, 3], [1, 'a', 3], [1, 2, 3]]
+```
+
+## Replacing An Empty String
+
+What will happen if we try to replace an empty string?
+
+```python
+new_string = 'my_string'.replace('', 'A')
+print(new_string)
+```
+
+### Answer
+
+In Python, there is an implied empty string between characters (and before the first one and after the last one), so for Python, the string `my_string` actually contains a lot of empty strings that can be replaced. This is the reason why the result is `AmAyA_AsAtArAiAnAgA`
+
+## Splitting an Empty String
+
+What is the result of splitting an empty string according to a space?
+
+```python
+print(''.split(' '))
+```
+
+### Answer
+
+If the separator we try to use with `split()` doesn’t exist in the string, the function just returns the original string, so the result simply be `['']`
+
+## Class Attributes
+
+What does the following code print?
+
+```python
+class MyClass:
+    numbers = [1,2,3]
+    for i in numbers:
+        i ** 2
+
+print(MyClass.i)
+```
+
+### Answer
+
+The key idea is that all the code we wrote inside `MyClass` belongs to the class itself (not to a specific instance of the class). The variables `numbers` and `i` are attributes of the class `MyClass`. When the class is initialized, the code inside it is run, and at the end of the loop, the attribute `i` gets the number 3. So the code prints 3.

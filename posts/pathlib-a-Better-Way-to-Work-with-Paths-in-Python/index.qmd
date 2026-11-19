@@ -208,6 +208,6 @@ or, for a recursive search inside subdirectories:
 txt_files = current_dir.rglob('*.txt')
 ```
 
-# Final Thoughts
+## Final Thoughts
 
 The pathlib module is a powerful tool to handle paths, files, and directories. In this article, I showed just a little bit of the `Path` class and I hope you’ll explore it more, and move from using the old `os` module.

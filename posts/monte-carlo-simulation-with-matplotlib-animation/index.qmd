@@ -21,7 +21,7 @@ The Monte Carlo algorithms have the following structure:
 3. Making a deterministic calculation on the selected input (that means a calculation that we know how to perform exactly)
 4. Collecting the results to make statistics
 
-# Animation Using Matplotlib
+## Animation Using Matplotlib
 
 Matplotlib is a popular visualization library for Python. It can help us to plot data with a wide range of graphs. When the data or the results change with time, it can be helpful to visualize it using animation that shows the change over time.
 
@@ -81,7 +81,7 @@ Finally, we create the `FuncAnimation` object with the following arguments: the 
   <img src="images/002.gif" alt="Circle animation">
 </figure>
 
-# Estimating $\pi$ with Monte Carlo
+## Estimating $\pi$ with Monte Carlo
 
 Now that we are familiar with the Monte Carlo simulation concept and also with the animation in matplotlib, we can use them to make a simulation to estimate $\pi$ (It's not the best way to estimate $\pi$, but a good example for Monte Carlo).
 
@@ -151,6 +151,6 @@ After defining the `animate` function, we pass it to the `FuncAnimation` object,
   <img src="images/003.gif" alt="Monte Carlo Pi Estimation Animation">
 </figure>
 
-# Conclusion
+## Conclusion
 
 Monte Carlo is a powerful algorithm to solve complex problems that can be hard to solve exactly. It can help us get a good estimation of the result with not too many computational resources. We also saw how we could use matplotlib `FuncAnimation` object to visualize changes over time with animation and save that animation as a gif file.
