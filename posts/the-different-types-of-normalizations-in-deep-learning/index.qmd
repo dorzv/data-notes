@@ -4,6 +4,7 @@ subtitle: "Exploring the Types of Normalization in Deep Learning and How They Wo
 author: "Dor Zvulun"
 date: "2025-01-31"
 categories: [Deep Learning, Machine Learning, Python, Data Science]
+image: "images/004.webp"
 ---
 
 Normalization is a key part of deep learning that helps models train more effectively and perform better. It works by keeping data or calculations in a consistent range, making it easier for the model to learn patterns. There are several types of normalization, like batch normalization and layer normalization, each with its own purpose. In this blog, we’ll look at these methods, how they work, and why they are useful in deep learning.

@@ -3,6 +3,7 @@ title: "TorchVision Transforms V2 — an Updated Library for Image Augmentation"
 author: "Dor Zvulun"
 date: "2024-01-12"
 categories: [Computer Vision, Pytorch, Python, Deep Learning, Machine Learning]
+image: "images/003.webp"
 ---
 
 With the PyTorch 2.0 version, torchvision 0.15 also released and brought an updated and extended API for the Transforms module.

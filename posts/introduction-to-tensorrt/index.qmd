@@ -1,8 +1,10 @@
 ---
 title: "Introduction to TensorRT"
+subtitle: "How to accelerate deep learning inference time"
 author: "Dor Zvulun"
 date: "2024-10-28"
-categories: [Deep Learning, Machine Learning, Data Science, PyTorch, Python]
+categories: [Deep Learning, Data Science, PyTorch]
+image: "images/001.webp"
 ---
 
 Deep Learning is a great tool that is incredibly successful in many tasks including vision and natural language tasks. While the model’s training could be very long, the inference is relatively quick. However, we sometimes need to speed up the inference, usually for real-time tasks (for example, for autonomous vehicles).

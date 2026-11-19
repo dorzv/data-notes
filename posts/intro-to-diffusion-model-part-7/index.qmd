@@ -2,8 +2,9 @@
 title: "Intro to Diffusion Model — Part 7"
 subtitle: "In this final post in the series, we are going to train our diffusion model and see the results."
 author: "Dor Zvulun"
-date: "2023-09-17"
+date: "2023-09-18"
 categories: [Computer Vision, Artificial Intelligence, Machine Learning]
+image: "images/cover.webp"
 ---
 
 This post is part of a series of posts about diffusion models:

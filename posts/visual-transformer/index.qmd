@@ -4,6 +4,7 @@ subtitle: "An introduction to the Visual Transformer architecture, its main idea
 author: "Dor Zvulun"
 date: "2024-08-30"
 categories: [Computer Vision, Deep Learning, Python, Machine Learning, Data Science]
+image: "images/001.webp"
 ---
 
 The Visual Transformer (ViT) architecture is a groundbreaking advancement in computer vision, offering a new way for machines to understand images. Unlike traditional methods that use convolutional neural networks (CNNs), Visual Transformers use self-attention mechanisms to process entire images at once. This approach captures global context and details more effectively, leading to improved performance in tasks like image classification and object detection.

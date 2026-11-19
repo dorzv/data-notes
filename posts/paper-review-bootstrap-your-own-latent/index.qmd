@@ -4,6 +4,7 @@ subtitle: "A New Approach to Self-Supervised Learning"
 author: "Dor Zvulun"
 date: "2024-11-29"
 categories: [Computer Vision, Data Science, Python, Deep Learning, Machine Learning]
+image: "images/001.webp"
 ---
 
 In a [previous post](https://python.plainenglish.io/self-supervised-learning-for-visual-representation-b242bde77241), we talked about the importance of self-supervised learning and why we would like to use it. Let’s repeat the main points. As we know, deep learning models need an extensive labeled dataset to learn from. While in a lot of cases, collecting the data itself is not a too hard task, the labeling step could be very time and money consuming, but this step is crucial for the classic supervised learning methods.

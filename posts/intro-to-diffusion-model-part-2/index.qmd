@@ -4,6 +4,7 @@ subtitle: "Part 2 of a series of posts about the diffusion model. In this post, 
 author: "Dor Zvulun"
 date: "2023-09-09"
 categories: [Computer Vision, Artificial Intelligence, Machine Learning]
+image: "images/cover.webp"
 ---
 
 This post is part of a series of posts about diffusion models:

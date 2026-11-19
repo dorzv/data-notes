@@ -1,9 +1,10 @@
 ---
 title: "Variational Autoencoder"
+subtitle: "Understanding and Implementing Variational Autoencoders"
 author: "Dor Zvulun"
 date: "2023-10-08"
 categories: [Computer Vision, Artificial Intelligence, Machine Learning, Python, Probability]
-format: html
+image: "images/002.webp"
 ---
 
 Generative artificial intelligence is one of the most exciting fields in deep learning. Such networks can generate new data, like image text or sound, by learning the distribution the data comes from. Various generative deep learning models exist, like Generative Adversarial Networks (GANs), Diffusion-based networks, and Variational Autoencoders.

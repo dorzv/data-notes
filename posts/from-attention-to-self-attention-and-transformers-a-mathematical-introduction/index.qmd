@@ -4,6 +4,7 @@ subtitle: "A formal introduction to the mathematics behind attention and self-at
 author: "Dor Zvulun"
 date: "2024-07-26"
 categories: [Deep Learning, Data Science, Machine Learning]
+image: "images/002.webp"
 ---
 
 In the [previous post](../attention-what-is-it-and-how-it-works/index.qmd), we discussed the attention mechanism and outlined the challenges it addresses. In this post, we delve into a more mathematical exploration of the attention mechanism, including the introduction of self-attention. Additionally, we look at the Transformer architecture, which is built upon the foundation of self-attention.

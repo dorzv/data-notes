@@ -2,8 +2,9 @@
 title: "Intro to Diffusion Model — Part 5"
 subtitle: "In this post, we are going to focus on the diffusion model itself. We introduce its building blocks and compose a U-Net using these blocks for the full diffusion model."
 author: "Dor Zvulun"
-date: "2023-09-09"
+date: "2023-09-16"
 categories: [Computer Vision, Artificial Intelligence, Machine Learning]
+image: "images/cover.webp"
 ---
 
 This post is part of a series of posts about diffusion models:

@@ -3,8 +3,7 @@ title: "Introduction to Stable Diffusion with Hugging Face"
 author: "Dor Zvulun"
 date: "2026-10-05"
 categories: [Deep Learning, Computer Vision, Stable Diffusion, Machine Learning, AI]
-format:
-  html: default
+image: images/001.webp
 ---
 
 ## Introduction to Stable Diffusion with Hugging Face

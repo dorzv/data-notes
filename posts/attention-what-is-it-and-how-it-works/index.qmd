@@ -4,6 +4,7 @@ subtitle: "Exploring the inner workings of attention mechanisms in deep learning
 author: "Dor Zvulun"
 date: "2024-06-26"
 categories: [Deep Learning, Computer Vision, NLP, Machine Learning, Data Science]
+image: images/007.webp
 ---
 
 Attention mechanisms are a breakthrough in the deep learning field. They help models concentrate on important parts of data, and boost understanding and performance in tasks like language processing and computer vision. This post will dive into the basics of attention in deep learning and show the main ideas behind it.

@@ -4,6 +4,7 @@ subtitle: "The Future of Object Detection with Transformers"
 author: "Dor Zvulun"
 date: "2025-02-28"
 categories: [Computer Vision, Artificial Intelligence, Data Science, Machine Learning]
+image: images/007.webp
 ---
 
 ## Object Detection

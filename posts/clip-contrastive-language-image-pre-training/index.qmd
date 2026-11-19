@@ -4,6 +4,7 @@ subtitle: "Breaking the Single-Modality Barrier"
 author: "Dor Zvulun"
 date: "2026-08-04"
 categories: [AI, Computer Vision, NLP, Deep Learning]
+image: images/001.webp
 ---
 
 In the world of modern AI, computer vision has long been treated as a solitary field. For years, the standard approach to understanding images was to analyze them in a vacuum — either by classifying pixels into rigid, predefined categories or trying to reconstruct them using architectures like Autoencoders and VAEs. But the human experience isn’t unimodal; we don’t just look at the world, we can also describe it.

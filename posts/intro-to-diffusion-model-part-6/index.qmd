@@ -1,8 +1,10 @@
 ---
 title: "Intro to Diffusion Model — Part 6"
+subtitle: "In this post, we are going to focus on sampling from the reverse process."
 author: "Dor Zvulun"
 date: "2023-09-17"
 categories: [Computer Vision, Artificial Intelligence, Machine Learning]
+image: "images/cover.webp"
 ---
 
 In this post, we are going to focus on sampling from the reverse process.
