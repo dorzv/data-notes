@@ -1,0 +1,26 @@
+---
+title: "Editor's Picks"
+description: "A selection of articles worth exploring."
+page-layout: full
+
+listing:
+  contents:
+    - posts/intro-to-diffusion-model-part-1
+    - posts/introduction-to-stable-diffusion-with-hugging-face
+    - posts/attention-what-is-it-and-how-it-works
+    - posts/variational-autoencoder
+    - posts/self-supervised-learning-for-visual-representation
+
+  template: article-list.ejs.md
+  sort: false
+  type: grid
+  grid-columns: 3
+  image-height: 250px
+  fields:
+    - image
+    - categories
+    - title
+    - subtitle
+    - author
+    - date
+---
