@@ -1,19 +1,45 @@
 ---
 title: "About"
-image: profile.jpg
-about:
-  template: jolla
-  links:
-    - icon: bluesky
-      text: Bluesky
-      href: https://bsky.app/
-    - icon: linkedin
-      text: LinkedIn
-      href: https://linkedin.com
-    - icon: github
-      text: Github
-      href: https://github.com
+page-layout: article
+---
+
+## About Data Notes
+
+**Data Notes** is a collection of thoughts, explorations, and practical guides on data, machine learning, computer vision, and artificial intelligence.
+
+The goal is simple: to explore interesting ideas, understand the mathematics behind them, and turn theoretical concepts into practical knowledge.
+
+### What You'll Find Here
+
+The blog covers a range of topics at the intersection of data, mathematics, and engineering:
+
+- **Machine Learning & Deep Learning** — Exploring models, architectures, training techniques, and the ideas shaping modern artificial intelligence.
+- **Computer Vision** — Exploring visual understanding, image processing, vision models, and the techniques that enable machines to interpret the world around them.
+- **Mathematics & Foundations** — Understanding the mathematical principles behind machine learning, from probability and statistics to optimization and linear algebra.
+- **Practical Experiments** — Implementations, experiments, technical explorations, and lessons learned along the way.
+
+### Why Data Notes?
+
+Understanding a concept goes beyond knowing how to use it. It means understanding the ideas behind it, the assumptions it relies on, and the intuition that makes it work.
+
+Data Notes is a place to document that process: breaking down complex topics, connecting theory with practice, and sharing knowledge along the way.
+
+## About the Author
+
+::: {.author-profile}
+![](profile.jpg){.author-photo}
+
+::: {.author-info}
+### Dor Zvulun
+
+Computer Vision & Deep Learning Engineer.
+
+[<i class="bi bi-linkedin"></i> LinkedIn](https://linkedin.com/in/dor-zvulun) · [<i class="bi bi-github"></i> GitHub](https://github.com/dorzv/ComputerVision/)
+:::
+:::
+
+I created Data Notes as a place to explore technical topics, document what I learn, and share explanations that I hope others will find useful. I believe that writing is one of the best ways to deepen understanding, and this blog is an opportunity to do exactly that.
 
 ---
 
-About this blog
+*Curiosity drives understanding. Understanding drives innovation.*
