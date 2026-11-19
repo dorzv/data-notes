@@ -3,7 +3,7 @@ title: "Intro to Diffusion Model — Part 4"
 subtitle: "In this post, we are going to talk more about the forward process. We define the noise schedule and write some code to implement this process."
 author: "Dor Zvulun"
 date: "2023-09-15"
-categories: [Computer Vision, Artificial Intelligence, Machine Learning]
+categories: [Computer Vision, AI, Deep Learning]
 image: "images/cover.webp"
 ---
 

@@ -3,7 +3,7 @@ title: "Self-Supervised Learning for Visual Representation"
 subtitle: "How we can improve our models by using unlabeled data."
 author: "Dor Zvulun"
 date: "2024-09-28"
-categories: [Computer Vision, Deep Learning, Machine Learning, Python, Data Science]
+categories: [Computer Vision, Deep Learning]
 image: "images/002.webp"
 ---
 

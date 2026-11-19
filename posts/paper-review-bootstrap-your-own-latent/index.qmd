@@ -3,7 +3,7 @@ title: "Paper Review: Bootstrap Your Own Latent (BYOL)"
 subtitle: "A New Approach to Self-Supervised Learning"
 author: "Dor Zvulun"
 date: "2024-11-29"
-categories: [Computer Vision, Data Science, Python, Deep Learning, Machine Learning]
+categories: [Computer Vision, Data Science, Deep Learning]
 image: "images/001.webp"
 ---
 

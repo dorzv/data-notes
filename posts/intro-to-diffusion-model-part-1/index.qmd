@@ -3,7 +3,7 @@ title: "Intro to Diffusion Model — Part 1"
 subtitle: "Part 1 of a series of posts about the diffusion model. This part will introduce the key ideas of the model, explain the main differences from other image generative models, and briefly describe the two processes of the diffusion model."
 author: "Dor Zvulun"
 date: "2023-09-05"
-categories: [Artificial Intelligence, Machine Learning, Computer Vision]
+categories: [AI, Deep Learning, Computer Vision]
 image: "images/cover.webp"
 ---
 

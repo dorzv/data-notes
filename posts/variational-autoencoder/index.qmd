@@ -3,7 +3,7 @@ title: "Variational Autoencoder"
 subtitle: "Understanding and Implementing Variational Autoencoders"
 author: "Dor Zvulun"
 date: "2023-10-08"
-categories: [Computer Vision, Artificial Intelligence, Machine Learning, Python, Probability]
+categories: [Computer Vision, AI, Deep Learning, Python]
 image: "images/002.webp"
 ---
 
