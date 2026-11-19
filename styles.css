@@ -506,11 +506,24 @@ body {
 }
 
 /* Categories */
+.listing-categories {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.4rem;
+}
+
 .article-category {
   font-size: 0.75rem;
-  color: #666;
+  color: var(--brand);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.category-separator {
+  color: #4f5457;
+  font-size: 1.05rem;
 }
 
 /* Author, date and reading time */

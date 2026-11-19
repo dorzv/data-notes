@@ -15,9 +15,12 @@
 
       <% if (item.categories) { %>
         <div class="listing-categories">
-          <% for (const category of item.categories) { %>
+          <% item.categories.forEach((category, index) => { %>
+            <% if (index > 0) { %>
+              <span class="category-separator">·</span>
+            <% } %>
             <span class="article-category"><%- category %></span>
-          <% } %>
+          <% }) %>
         </div>
       <% } %>
 
