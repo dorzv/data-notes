@@ -6,7 +6,7 @@ editor:
 
 website:
   title: "Data Notes"
-  description: "Practical writing about data science, machine learning, and software."
+  description: "Practical writing about computer vision, deep learning and data science."
   site-url: https://dorzv.github.io/test-blog/
 
   navbar:
@@ -18,14 +18,14 @@ website:
     left:
       - text: "Latest"
         href: index.qmd#latest
+      - text: "Editor's Picks"
+        href: editors-picks.qmd
       - text: "About"
         href: about.qmd
-      - text: "Write"
-        href: about.qmd#contact
 
     right:
       - icon: github
-        href: https://github.com/YOUR-USERNAME
+        href: https://github.com/dorzv/ComputerVision/
         aria-label: GitHub
 
     search: true
@@ -36,7 +36,7 @@ website:
       - text: "About"
         href: about.qmd
       - text: "GitHub"
-        href: https://github.com/YOUR-USERNAME
+        href: https://github.com/dorzv/ComputerVision/
 
 format:
   html:
