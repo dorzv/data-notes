@@ -3,7 +3,7 @@ title: "From Attention to Self-Attention and Transformers — a Mathematical Int
 subtitle: "A formal introduction to the mathematics behind attention and self-attention mechanism"
 author: "Dor Zvulun"
 date: "2024-07-26"
-categories: [Deep Learning, Data Science, Machine Learning]
+categories: [Deep Learning, Data Science]
 image: "images/002.webp"
 ---
 

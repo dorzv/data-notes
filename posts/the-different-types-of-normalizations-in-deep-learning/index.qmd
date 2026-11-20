@@ -3,7 +3,7 @@ title: "The Different Types of Normalizations in Deep Learning"
 subtitle: "Exploring the Types of Normalization in Deep Learning and How They Work"
 author: "Dor Zvulun"
 date: "2025-01-31"
-categories: [Deep Learning, Machine Learning, Python, Data Science]
+categories: [Deep Learning, Data Science]
 image: "images/004.webp"
 ---
 
