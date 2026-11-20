@@ -1,15 +1,5 @@
 [
   {
-    "listing": "/editors-picks.html",
-    "items": [
-      "/posts/intro-to-diffusion-model-part-1/index.html",
-      "/posts/introduction-to-stable-diffusion-with-hugging-face/index.html",
-      "/posts/attention-what-is-it-and-how-it-works/index.html",
-      "/posts/variational-autoencoder/index.html",
-      "/posts/self-supervised-learning-for-visual-representation/index.html"
-    ]
-  },
-  {
     "listing": "/index.html",
     "items": [
       "/posts/introduction-to-stable-diffusion-with-hugging-face/index.html",
@@ -55,6 +45,16 @@
       "/posts/pathlib-a-Better-Way-to-Work-with-Paths-in-Python/index.html",
       "/posts/depth-from-a-stereo-cameras-system/index.html",
       "/posts/Basic-Probability-Expectation-and-Variance/index.html"
+    ]
+  },
+  {
+    "listing": "/editors-picks.html",
+    "items": [
+      "/posts/intro-to-diffusion-model-part-1/index.html",
+      "/posts/introduction-to-stable-diffusion-with-hugging-face/index.html",
+      "/posts/attention-what-is-it-and-how-it-works/index.html",
+      "/posts/variational-autoencoder/index.html",
+      "/posts/self-supervised-learning-for-visual-representation/index.html"
     ]
   }
 ]
