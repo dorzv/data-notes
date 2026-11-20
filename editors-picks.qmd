@@ -11,7 +11,7 @@ listing:
     - posts/variational-autoencoder
     - posts/self-supervised-learning-for-visual-representation
 
-  template: article-list.ejs.md
+  template: article-list.ejs
   sort: false
   type: grid
   grid-columns: 3

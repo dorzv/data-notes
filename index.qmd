@@ -4,7 +4,7 @@ page-layout: full
 listing:
   id: article-listing
   contents: posts
-  template: article-list.ejs.md
+  template: article-list.ejs
   sort: "date desc"
   type: grid
   grid-columns: 3
