@@ -27,7 +27,7 @@ Data Notes is a place to document that process: breaking down complex topics, co
 ## About the Author
 
 ::: {.author-profile}
-![](profile.jpg){.author-photo}
+![](images/profile.jpg){.author-photo}
 
 ::: {.author-info}
 ### Dor Zvulun

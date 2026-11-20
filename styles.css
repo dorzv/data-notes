@@ -645,3 +645,10 @@ div.sourceCode pre {
     height: 90px;
   }
 }
+
+/* Make the GitHub icon more balanced with the search icon */
+.navbar .bi-github {
+  font-size: 1.4rem;
+  width: 1.4rem;
+  height: 1.4rem;
+}
