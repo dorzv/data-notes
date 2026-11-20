@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dor Zvulun">
+<meta name="dcterms.date" content="2023-09-14">
+
+<title>Intro to Diffusion Model — Part 3 – Data Notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-83a199cbbb515fae395694f3363d7880.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Data Notes</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html#latest"> 
+<span class="menu-text">Latest</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../editors-picks.html"> 
+<span class="menu-text">Editor’s Picks</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dorzv/ComputerVision/"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#simplified-training-objective" id="toc-simplified-training-objective" class="nav-link active" data-scroll-target="#simplified-training-objective">Simplified Training Objective</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Intro to Diffusion Model — Part 3</h1>
+<p class="subtitle lead">In this post, we are going to develop mathematically the loss function of the diffusion model in detail and introduce the training algorithm.</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Computer Vision</div>
+    <div class="quarto-category">AI</div>
+    <div class="quarto-category">Deep Learning</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dor Zvulun </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 14, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This post is part of a series of posts about diffusion models:</p>
+<ul>
+<li><a href="../../posts/intro-to-diffusion-model-part-1/index.html">Intro to Diffusion Model — Part 1</a></li>
+<li><a href="../../posts/intro-to-diffusion-model-part-2/index.html">Intro to Diffusion Model — Part 2</a><br>
+</li>
+<li><a href="../../posts/intro-to-diffusion-model-part-3/index.html">Intro to Diffusion Model — Part 3</a> (this post)<br>
+</li>
+<li><a href="../../posts/intro-to-diffusion-model-part-4/index.html">Intro to Diffusion Model — Part 4</a><br>
+</li>
+<li><a href="../../posts/intro-to-diffusion-model-part-5/index.html">Intro to Diffusion Model — Part 5</a><br>
+</li>
+<li><a href="../../posts/intro-to-diffusion-model-part-6/index.html">Intro to Diffusion Model — Part 6</a><br>
+</li>
+<li><a href="../../posts/intro-to-diffusion-model-part-7/index.html">Intro to Diffusion Model — Part 7</a><br>
+</li>
+<li><a href="https://github.com/dorzv/ComputerVision/blob/master/Diffusion/Diffusion.ipynb">Full implementation</a></li>
+</ul>
+<p>In the previous part, we defined mathematically the forward and the reverse processes. We also introduced the model we want to estimate for going from a noisier image to an image with less noise.</p>
+<p><span class="math display">\[
+p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
+\]</span></p>
+<p>&nbsp;</p>
+<p>We also said that we would simplify the problem by fixing the variance and only estimating the mean, as in the <a href="https://arxiv.org/pdf/2006.11239.pdf">DDPM paper</a>.</p>
+<p>In this post, we want to build a loss function that will help us to find the parameters for the model. Basically, we can use the negative log-likelihood as a loss function <span class="math inline">\(-\log(p_\theta(\mathbf{x}_0))\)</span>. The problem with this approach is that to estimate the distribution of <span class="math inline">\(\mathbf{x}_0\)</span> in the reverse process, we need to keep track of all the <span class="math inline">\(T\)</span> steps before.</p>
+<p>So, instead of using the negative log-likelihood directly, we can use it as a lower bound for another function that we can optimize. Let’s look at the following inequality:</p>
+<p><span class="math display">\[
+\begin{aligned}
+-\log p_\theta (\mathbf{x}_0) &amp;\le -\log p_\theta (\mathbf{x}_0) + D_{\mathrm{KL}} (q (\mathbf{x}_{1:T} \mid \mathbf{x}_0) \parallel p_\theta (\mathbf{x}_{1:T} \mid \mathbf{x}_0)) \\
+&amp;= -\log p_\theta (\mathbf{x}_0) + \mathbb{E}_{\mathbf{x}_{1:T} \sim q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)} \left[ \log \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{1:T} \mid \mathbf{x}_0)} \right]
+\end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>We add to the negative log-likelihood a non-negative value — KL divergence — so the expression on the right-hand side is always bigger or equal to the left-hand side. By minimizing the right-hand side, we can also minimize the negative log-likelihood. You must ask yourself now how this helps us if, on the right-hand side, we again have the original negative log-likelihood. You are right, of course. To solve that, let’s play a little with the log component in the KL divergence on the right-hand side. First, we can apply Bayes’ rule to the numerator of the log argument:</p>
+<p><span class="math display">\[
+p_\theta (\mathbf{x}_{1:T} \mid \mathbf{x}_0) = \frac{p_\theta (\mathbf{x}_0 \mid \mathbf{x}_{1:T}) p_\theta (\mathbf{x}_{1:T})}{p_\theta (\mathbf{x}_0)} = \frac{p_\theta (\mathbf{x}_0, \mathbf{x}_{1:T})}{p_\theta (\mathbf{x}_0)} = \frac{p_\theta (\mathbf{x}_{0:T})}{p_\theta (\mathbf{x}_0)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>Taking this result back to the log, we get</p>
+<p><span class="math display">\[
+\log \left( \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{1:T} \mid \mathbf{x}_0)} \right) = \log \left( \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{\frac{p_\theta (\mathbf{x}_{0:T})}{p_\theta (\mathbf{x}_0)}} \right) = \log \left( \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{0:T})} \right) + \log(p_\theta(\mathbf{x}_0))
+\]</span></p>
+<p>&nbsp;</p>
+<p>By substituting the last result back into the inequality, we can get rid of the log-likelihood term and get</p>
+<p><span class="math display">\[
+E_q [-\log(p_\theta(\mathbf{x}_0))] \le E_q \left[ \log \left( \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{0:T})} \right) \right]
+\]</span></p>
+<p>&nbsp;</p>
+<p>On the right-hand side, the denominator is the forwarding process starting from <span class="math inline">\(\mathbf{x}_0\)</span>, and the numerator is the reverse process, as defined in the previous post. Let’s use this explicitly in the logarithm term and develop it more.</p>
+<p><span class="math display">\[
+\log \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{0:T})} = \log \frac{\prod_{t=1}^T q(\mathbf{x}_t \mid \mathbf{x}_{t-1})}{p_\theta (\mathbf{x}_T) \prod_{t=1}^T p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} = -\log p_\theta (\mathbf{x}_T) + \sum_{t=1}^T \log \frac{q(\mathbf{x}_t \mid \mathbf{x}_{t-1})}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>where we converted the multiplications inside the log to a summation of logs. Now, let’s move the first element under the summation outside:</p>
+<p><span class="math display">\[
+-\log p_\theta (\mathbf{x}_T) + \sum_{t=1}^T \log \frac{q(\mathbf{x}_t \mid \mathbf{x}_{t-1})}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} = -\log p_\theta (\mathbf{x}_T) + \sum_{t=2}^T \log \frac{q(\mathbf{x}_t \mid \mathbf{x}_{t-1})}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} + \log \frac{q(\mathbf{x}_1 \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>For the numerator in the summation, we can use Bayes’ rule:</p>
+<p><span class="math display">\[
+q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) = \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t) q(\mathbf{x}_t)}{q(\mathbf{x}_{t-1})}
+\]</span></p>
+<p>&nbsp;</p>
+<p>The problem with calculating <span class="math inline">\(q(\mathbf{x}_{t-1} \mid \mathbf{x}_t)\)</span> directly is that it is <strong>intractable</strong> — we cannot reverse a step of noise without knowing the underlying data distribution. However, if we condition on the initial clean image <span class="math inline">\(\mathbf{x}_0\)</span>, the expression <span class="math inline">\(q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)\)</span> becomes a simple closed-form Gaussian (as can be seen by applying Bayes’ rule; see below). So we want to add conditioning on the initial state <span class="math inline">\(\mathbf{x}_0\)</span> such that:</p>
+<p><span class="math display">\[
+\frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t) q(\mathbf{x}_t)}{q(\mathbf{x}_{t-1})} \Rightarrow \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) q(\mathbf{x}_t \mid \mathbf{x}_0)}{q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>To actually do it, we will use the Markov property of the forward process. Each step of the forward process <span class="math inline">\(\mathbf{x}_t\)</span> depends only on <span class="math inline">\(\mathbf{x}_{t-1}\)</span>. That means we only have to know <span class="math inline">\(\mathbf{x}_{t-1}\)</span> to go to <span class="math inline">\(\mathbf{x}_t\)</span>, and the previous history doesn’t matter. This property means we can write:</p>
+<p><span class="math display">\[
+q(\mathbf{x}_t \mid \mathbf{x}_{t-1}) = q(\mathbf{x}_t \mid \mathbf{x}_{t-1}, \mathbf{x}_0) = \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) q(\mathbf{x}_t \mid \mathbf{x}_0)}{q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>Putting it back to the original equation, we get</p>
+<p><span class="math display">\[
+\begin{aligned}
+-\log p_\theta (\mathbf{x}_T) &amp;+ \sum_{t=2}^T \log \frac{q(\mathbf{x}_t \mid \mathbf{x}_{t-1})}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} + \log \frac{q(\mathbf{x}_1 \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)} \\
+&amp;= -\log p_\theta (\mathbf{x}_T) + \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) q(\mathbf{x}_t \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)} \right) + \log \frac{q(\mathbf{x}_1 \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)}
+\end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>Now, let’s focus on the summation and split it as follows:</p>
+<p><span class="math display">\[
+\sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) q(\mathbf{x}_t \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)} \right) = \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} \right) + \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_t \mid \mathbf{x}_0)}{q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)} \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>Look carefully at the second summation on the right-hand side. The numerator is one step after the denominator. That means if we change the summation of the logs into a multiplication of the arguments in the log, the numerator of the current <span class="math inline">\(t\)</span> will cancel the denominator of <span class="math inline">\(t+1\)</span>. So, only the first term in the denominator and the last term in the numerator will survive.</p>
+<p><span class="math display">\[
+\frac{\cancel{q(\mathbf{x}_2 \mid \mathbf{x}_0)} \cancel{q(\mathbf{x}_3 \mid \mathbf{x}_0)} \dots \cancel{q(\mathbf{x}_{T-1} \mid \mathbf{x}_0)} q(\mathbf{x}_T \mid \mathbf{x}_0)}{q(\mathbf{x}_1 \mid \mathbf{x}_0) \cancel{q(\mathbf{x}_2 \mid \mathbf{x}_0)} \dots \cancel{q(\mathbf{x}_{T-2} \mid \mathbf{x}_0)} \cancel{q(\mathbf{x}_{T-1} \mid \mathbf{x}_0)} } = \frac{q(\mathbf{x}_T \mid \mathbf{x}_0)}{q(\mathbf{x}_1 \mid \mathbf{x}_0)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>The previous equation can now be written as</p>
+<p><span class="math display">\[
+\sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) q(\mathbf{x}_t \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)} \right) = \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} \right) + \log \left( \frac{q(\mathbf{x}_T \mid \mathbf{x}_0)}{q(\mathbf{x}_1 \mid \mathbf{x}_0)} \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>Let’s substitute this result back to the original equation and play with the logarithms:</p>
+<p><span class="math display">\[
+\begin{aligned}
+-\log p_\theta (\mathbf{x}_T) &amp;+ \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) q(\mathbf{x}_t \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)} \right) + \log \frac{q(\mathbf{x}_1 \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)} \\
+&amp;= -\log p_\theta (\mathbf{x}_T) + \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} \right) + \log \frac{q(\mathbf{x}_T \mid \mathbf{x}_0)}{q(\mathbf{x}_1 \mid \mathbf{x}_0)} + \log \frac{q(\mathbf{x}_1 \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)} \\
+&amp;= -\log p_\theta (\mathbf{x}_T) + \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} \right) + \log \frac{q(\mathbf{x}_T \mid \mathbf{x}_0) q(\mathbf{x}_1 \mid \mathbf{x}_0)}{q(\mathbf{x}_1 \mid \mathbf{x}_0) p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)} \\
+&amp;= \log q(\mathbf{x}_T \mid \mathbf{x}_0) - \log p_\theta (\mathbf{x}_T) + \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} \right) - \log p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1) \\
+&amp;= \log \frac{q(\mathbf{x}_T \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_T)} + \sum_{t=2}^T \log \left( \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0)}{p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t)} \right) - \log p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)
+\end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>And finally, we can represent the last result of the full loss using KL divergence notation so</p>
+<p><span class="math display">\[
+\log \frac{q(\mathbf{x}_{1:T} \mid \mathbf{x}_0)}{p_\theta (\mathbf{x}_{0:T})} = \underbrace{D_{\mathrm{KL}} (q(\mathbf{x}_T \mid \mathbf{x}_0) \parallel p_\theta (\mathbf{x}_T))}_{L_T} + \sum_{t=2}^T \underbrace{D_{\mathrm{KL}} (q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) \parallel p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t))}_{L_{t-1}} \underbrace{-\log p_\theta (\mathbf{x}_0 \mid \mathbf{x}_1)}_{L_0}
+\]</span></p>
+<p>&nbsp;</p>
+<p>The first component on the right-hand side, <span class="math inline">\({L}_{T}\)</span>, can be ignored while training since <em>q</em> has no learnable parameters, and <span class="math inline">\(\mathbf{x}_T\)</span> is just a Gaussian noise. Let’s look closer now to the second component, <span class="math inline">\({L}_{t}\)</span>. This component calculates the KL divergence between <em>q</em> and <em>p</em>. For <em>p</em>, we already explained in the previous post that it can be described by:</p>
+<p><span class="math display">\[
+p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
+\]</span></p>
+<p>&nbsp;</p>
+<p>but we are going to use a simplified version where the variance is not learnable but is known:</p>
+<p><span class="math display">\[
+p_\theta (\mathbf{x}_{t-1} \mid \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \sigma_t \mathbf{I})
+\]</span></p>
+<p>&nbsp;</p>
+<p>Now, let’s look at <em>q</em>. This distribution is also a Gaussian, so we can write</p>
+<p><span class="math display">\[
+q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) = \mathcal{N}\left(\mathbf{x}_{t-1}; \tilde{\boldsymbol{\mu}}_\theta(\mathbf{x}_t, \mathbf{x}_0), \tilde{\beta}_t \mathbf{I}\right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>Let’s recall the structure of a Gaussian distribution:</p>
+<p><span class="math display">\[
+\mathcal{N}(x) \propto \exp \left( -\frac{1}{2} \frac{(x - \mu)^2}{\sigma^2} \right) = \exp \left( -\frac{1}{2} \frac{x^2 - 2\mu x + \mu^2}{\sigma^2} \right) = \exp \left( -\frac{1}{2} \left[ \frac{1}{\sigma^2} x^2 - 2 \frac{\mu}{\sigma^2} x + \frac{\mu^2}{\sigma^2} \right] \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>Now, we can use Bayes’ rule to write</p>
+<p><span class="math display">\[
+q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) = q(\mathbf{x}_t \mid \mathbf{x}_{t-1}, \mathbf{x}_0) \frac{q(\mathbf{x}_{t-1} \mid \mathbf{x}_0)}{q(\mathbf{x}_t \mid \mathbf{x}_0)}
+\]</span></p>
+<p>&nbsp;</p>
+<p>Since all the distributions above are Gaussian, we can write, according to the development from the previous post:</p>
+<p><span class="math display">\[
+q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) \propto \exp \left( -\frac{1}{2} \left[ \frac{(\mathbf{x}_t - \sqrt{\alpha_t}\mathbf{x}_{t-1})^2}{\beta_t} + \frac{(\mathbf{x}_{t-1} - \sqrt{\bar{\alpha}_{t-1}}\mathbf{x}_0)^2}{1 - \bar{\alpha}_{t-1}} - \frac{(\mathbf{x}_t - \sqrt{\bar{\alpha}_t}\mathbf{x}_0)^2}{1 - \bar{\alpha}_t} \right] \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>The distribution of the left-hand side is Gaussian, as we wrote earlier, so we want to rearrange the right-hand side to a Gaussian structure, and then we can find the mean and the variance.</p>
+<p><span class="math display">\[
+q(\mathbf{x}_{t-1} \mid \mathbf{x}_t, \mathbf{x}_0) \propto \exp \left( -\frac{1}{2} \left[ \underbrace{\left( \frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}} \right)}_{1/\sigma^2} \mathbf{x}_{t-1}^2 - \underbrace{\left( \frac{2\sqrt{\alpha_t}}{\beta_t}\mathbf{x}_t + \frac{2\sqrt{\bar{\alpha}_{t-1}}}{1 - \bar{\alpha}_{t-1}}\mathbf{x}_0 \right)}_{2\mu/\sigma^2} \mathbf{x}_{t-1} + \underbrace{f(\mathbf{x}_t, \mathbf{x}_0)}_{\mu^2/\sigma^2} \right] \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>where <em>f</em> is some function of <span class="math inline">\(\mathbf{x}_t\)</span> and <span class="math inline">\(\mathbf{x}_0\)</span> that we don’t really need for getting the mean and the variance. From the last relation, we conclude that:</p>
+<p><span class="math display">\[{\sigma }^{2}={\tilde{\beta }}_{t}=\frac{1}{\left({\frac{{\alpha }_{t}}{{\beta }_{t}}+\frac{1}{1-{\bar{\alpha }}_{t-1}}}\right)}=\frac{1}{\left({\frac{{\alpha }_{t}-{\bar{\alpha }}_{t}+{\beta }_{t}}{{\beta }_{t}(1-{\bar{\alpha }}_{t-1})}}\right)}=\frac{1-{\bar{\alpha }}_{t-1}}{1-{\bar{\alpha }}_{t}}\cdot {\beta }_{t}\]</span></p>
+<p>&nbsp;</p>
+<p><span class="math display">\[
+\begin{aligned} \tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0) &amp;= \left( \frac{\sqrt{\alpha_t}}{\beta_t}\mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}}{1 - \bar{\alpha}_{t-1}}\mathbf{x}_0 \right) \frac{1}{\left( \frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}} \right)} \\ &amp;= \left( \frac{\sqrt{\alpha_t}}{\beta_t}\mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}}{1 - \bar{\alpha}_{t-1}}\mathbf{x}_0 \right) \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t \\ &amp;= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \mathbf{x}_0 \end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>In the previous post, we saw that we can write</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbf{x}_t = \sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\varepsilon}\\
+&amp;\Rightarrow \mathbf{x}_0 = \frac{1}{\sqrt{\bar{\alpha}_t}}\left(\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\varepsilon}\right)
+\end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>We substitute this to the previous equation and get</p>
+<p><span class="math display">\[
+\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0) = \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}}\boldsymbol{\varepsilon} \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>If we go back to the (second) loss expression we have developed, we can conclude that we want our network to train <span class="math inline">\(\boldsymbol{\mu}_\theta\)</span> to predict <span class="math inline">\(\tilde{\boldsymbol{\mu}}_t\)</span>. In addition, since we know <span class="math inline">\(\mathbf{x}_t\)</span> in the reverse process, we actually need to predict the noise at step <em>t</em>, <span class="math inline">\(\boldsymbol{\varepsilon}_t\)</span>.</p>
+<p><span class="math display">\[
+\boldsymbol{\mu}_\theta(\mathbf{x}_t, t) = \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}}\boldsymbol{\varepsilon}_\theta(\mathbf{x}_t, t) \right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>Since we deal with Gaussians and the only parameter is the mean, using the KL divergence leads to the following loss:</p>
+<p><span class="math display">\[
+\begin{aligned} L_t &amp;= \frac{1}{2\sigma_t^2} \Vert{}\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0) - \boldsymbol{\mu}_\theta(\mathbf{x}_t, t)\Vert{}^2 \\ &amp;= \frac{1}{2\sigma_t^2} \left\Vert{} \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}}\boldsymbol{\varepsilon}_t \right) - \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}}\boldsymbol{\varepsilon}_\theta(\mathbf{x}_t, t) \right) \right\Vert{}^2 \\ &amp;= \frac{(1 - \alpha_t)^2}{2\alpha_t(1 - \bar{\alpha}_t)\sigma_t^2} \Vert{}\boldsymbol{\varepsilon}_t - \boldsymbol{\varepsilon}_\theta(\mathbf{x}_t, t)\Vert{}^2 \end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>In the <a href="https://arxiv.org/abs/2006.11239">DDPM</a> paper, it is found empirically that the training works better if the scaling factor is omitted, i.e., we can simplify the loss to</p>
+<p><span class="math display">\[
+L_t = \Vert{}\boldsymbol{\varepsilon}_t - \boldsymbol{\varepsilon}_\theta(\mathbf{x}_t, t)\Vert{}^2
+\]</span></p>
+<p>&nbsp;</p>
+<p>That’s the objective we got from the middle term (in the summation) of the full loss expression. Now, we need to handle the last term of the loss <span class="math inline">\({L}_{0}\)</span>. For this term, the DDPM paper suggests using an independent discrete decoder derived from the Gaussian</p>
+<p><span class="math display">\[
+\mathcal{N}(\mathbf{x}_0; \boldsymbol{\mu}_\theta(\mathbf{x}_1, 1), \sigma^2 \mathbf{I})
+\]</span></p>
+<p>&nbsp;</p>
+<p>The paper also assumes that the image is originally constructed from discrete pixels with values {0, 1, 2, …, 255} that scaled to the range [-1, 1]. The distribution is then represented as:</p>
+<p><span class="math display">\[
+p_\theta(\mathbf{x}_0 \mid \mathbf{x}_1) = \prod_{i=1}^D \int_{\delta_-(x_0^i)}^{\delta_+(x_0^i)} \mathcal{N}(x, \mu_\theta^i(\mathbf{x}_1, 1), \sigma_1^2) dx
+\]</span></p>
+<p>&nbsp;</p>
+<p>where</p>
+<p><span class="math display">\[
+\delta_+(x) = \begin{cases} \infty &amp; \text{if } x = 1 \\ x + \frac{1}{255} &amp; \text{if } x &lt; 1 \end{cases} \quad \delta_-(x) = \begin{cases} -\infty &amp; \text{if } x = -1 \\ x - \frac{1}{255} &amp; \text{if } x &gt; -1 \end{cases}
+\]</span></p>
+<p>&nbsp;</p>
+<p>and D is the data dimensionality (the number of pixels in the image). Intuitively, our network predicts the mean of a pixel, and then we use this prediction to draw a Gaussian distribution. We integrate over this distribution according to the real pixel value as in the original image <span class="math inline">\(\mathbf{x}_0\)</span>, from the real value minus 1/255 to the real value plus 1/255. If the predicted mean is close to the original value of the pixel, the result of the integral will be high.</p>
+<p>However, the paper simplifies this loss also. Instead of calculating the integral, it is approximated by the Gaussian probability density function times the bin width:</p>
+<p><span class="math display">\[
+p_\theta(\mathbf{x}_0 \mid \mathbf{x}_1) \approx \frac{1}{\sqrt{2\pi}\sigma_1} \exp \left( -\frac{1}{2} \frac{\Vert{}\mathbf{x}_0 - \boldsymbol{\mu}_\theta(\mathbf{x}_1, 1)\Vert{}^2}{\sigma_1^2} \right) \cdot \frac{2}{255}
+\]</span></p>
+<p>&nbsp;</p>
+<p>and the log will be</p>
+<p><span class="math display">\[
+L_0 = -\log(p_\theta(\mathbf{x}_0 \mid \mathbf{x}_1)) \approx \frac{1}{2\sigma_1^2} \Vert{}\mathbf{x}_0 - \boldsymbol{\mu}_\theta(\mathbf{x}_1, 1)\Vert{}^2 + C
+\]</span></p>
+<p>&nbsp;</p>
+<p>where <em>C</em> is a constant so that we can ignore it. We are also going to ignore the scaling factor and recall the relations:</p>
+<p><span class="math display">\[
+\mathbf{x}_0 = \frac{1}{\sqrt{\bar{\alpha}_1}}(\mathbf{x}_1 - \sqrt{1 - \bar{\alpha}_1}\boldsymbol{\varepsilon}) = \frac{1}{\sqrt{\alpha_1}}(\mathbf{x}_1 - \sqrt{1 - \alpha_1}\boldsymbol{\varepsilon})
+\]</span></p>
+<p>&nbsp;</p>
+<p><span class="math display">\[
+\boldsymbol{\mu}_\theta(\mathbf{x}_1, 1) = \frac{1}{\sqrt{\alpha_1}}\left(\mathbf{x}_1 - \frac{1 - \alpha_1}{\sqrt{1 - \bar{\alpha}_1}}\boldsymbol{\varepsilon}_\theta(\mathbf{x}_1, 1)\right) = \frac{1}{\sqrt{\alpha_1}}\left(\mathbf{x}_1 - \frac{1 - \alpha_1}{\sqrt{1 - \alpha_1}}\boldsymbol{\varepsilon}_\theta(\mathbf{x}_1, 1)\right)
+\]</span></p>
+<p>&nbsp;</p>
+<p>substitute these and again ignoring the scaling factor, we get</p>
+<p><span class="math display">\[
+L_0 \approx \Vert{}\boldsymbol{\varepsilon}_1 - \boldsymbol{\varepsilon}_\theta(\mathbf{x}_1, 1)\Vert{}^2
+\]</span></p>
+<p>&nbsp;</p>
+<section id="simplified-training-objective" class="level2">
+<h2 class="anchored" data-anchor-id="simplified-training-objective">Simplified Training Objective</h2>
+<p>From all the above development, the DDPM paper suggests using this loss function for training:</p>
+<p><span class="math display">\[
+\begin{aligned} L_{\text{simple}} &amp;:= \mathbb{E}_{t \sim U[1, T], \mathbf{x}_0, \boldsymbol{\varepsilon}} \left[ \Vert{}\boldsymbol{\varepsilon} - \boldsymbol{\varepsilon}_\theta(\mathbf{x}_t, t)\Vert{}^2 \right] \\ &amp;= \mathbb{E}_{t \sim U[1, T], \mathbf{x}_0, \boldsymbol{\varepsilon}} \left[ \Vert{}\boldsymbol{\varepsilon} - \boldsymbol{\varepsilon}_\theta \left( \sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\varepsilon}, t \right) \Vert{}^2 \right] \end{aligned}
+\]</span></p>
+<p>&nbsp;</p>
+<p>In the expression above, <span class="math inline">\(\mathbf{x}_0\)</span> is the real image without any noise that we start with, <em>t</em> is the sample time step in the process, <span class="math inline">\(\boldsymbol{\varepsilon}\)</span> is Gaussian noise sampled from <span class="math inline">\(\mathcal{N}(\mathbf{0}, \mathbf{I})\)</span>, and <span class="math inline">\(\boldsymbol{\varepsilon}_\theta\)</span> is the neural network prediction of the noise. Our training objective is to have the network predict the added noise vector by minimizing the mean squared error, which allows the model to learn how to reverse the diffusion process.</p>
+<p>Based on this loss function, the DDPM paper suggests the following algorithm for training:</p>
+<figure class="figure">
+<img src="images/001.webp" alt="DDPM Training Algorithm" class="figure-img">
+<figcaption>
+Training Algorithm from DDPM paper
+</figcaption>
+</figure>
+<p>&nbsp;</p>
+<p>The algorithm samples a random real image <span class="math inline">\(\mathbf{x}_0\)</span> from the distribution <span class="math inline">\(q(\mathbf{x}_0)\)</span>, then sample time step uniformly between 1 to <em>T,</em> which determines the noise level and generates a random sample of noise from a Gaussian distribution. Using that noise, the image is corrupted to <span class="math inline">\(\mathbf{x}_t\)</span> on the basis of <span class="math inline">\(\mathbf{x}_0\)</span> and a known <span class="math inline">\({\beta }_{t}\)</span>, and the neural network uses that in its training to predict the noise.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dorzv\.github\.io\/data-notes\/");
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Data Notes</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+<p>About</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/dorzv/ComputerVision/">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dor Zvulun">
+<meta name="dcterms.date" content="2023-08-12">
+
+<title>DeepFake Face-Swap in Video with Pytorch and OpenCV – Data Notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-83a199cbbb515fae395694f3363d7880.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Data Notes</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html#latest"> 
+<span class="menu-text">Latest</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../editors-picks.html"> 
+<span class="menu-text">Editor’s Picks</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dorzv/ComputerVision/"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#extraction-and-alignment-building-the-datasets" id="toc-extraction-and-alignment-building-the-datasets" class="nav-link active" data-scroll-target="#extraction-and-alignment-building-the-datasets">Extraction and Alignment — Building the Datasets</a></li>
+  <li><a href="#training-the-network" id="toc-training-the-network" class="nav-link" data-scroll-target="#training-the-network">Training the Network</a></li>
+  <li><a href="#generating-the-fake-video" id="toc-generating-the-fake-video" class="nav-link" data-scroll-target="#generating-the-fake-video">Generating the Fake Video</a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting It All Together</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">DeepFake Face-Swap in Video with Pytorch and OpenCV</h1>
+<p class="subtitle lead">A Practical Guide to Designing a Lightweight Face-Swap System</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Computer Vision</div>
+    <div class="quarto-category">AI</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">PyTorch</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dor Zvulun </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 12, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In this post, we are going to build a face swap program which is a simplified version of the “<a href="https://github.com/iperov/DeepFaceLab">DeepFaceLab</a>” project, using both Pytorch and OpenCV. Basically, we want to take a <em>source</em> video of the person with the face we are interested in and a <em>destination</em> video where we want to insert that face to make a new video like the destination video but with the face from the source video.</p>
+<figure class="figure">
+<img src="images/001.webp" alt="A frame from the source video (left) and the destination video (right)" class="figure-img">
+<figcaption>
+A frame from the source video (left) and the destination video (right)
+</figcaption>
+</figure>
+<p>The full code for this post is in <a href="https://github.com/dorzv/ComputerVision/tree/master/face_swap">this GitHub repository</a>.</p>
+<p>The program, and the post, will be divided into three sections. The first one deals with the extraction of the faces from the two videos and the construction of standard face datasets. The second part uses the datasets together with a neural network to learn how to represent a face in some latent space and reconstruct an image of a face from this representation. The last part uses the neural network to create a face as in the source video but with the expression of the person in the destination video for each frame of the video. Then the original face is replaced by the fake one, and the new frame is saved into the new fake video.</p>
+<p>The basic structure of the project (before the first run) looks as follows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> face_masking.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> main.py</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> face_extraction_tools.py</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> quick96.py</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> merge_frame_to_fake_video.py</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> data</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── data_dst.mp4</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── data_src.mp4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>main.py</code> file is, as the name implies, the main script that runs the whole program from two videos to a fake video. We will talk about the other Python files in the following section. What’s important to notice is the <em>data</em> folder contains <em>data_dst.mp4</em> and <em>data_src.mp4</em> files that the program will look for.</p>
+<section id="extraction-and-alignment-building-the-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="extraction-and-alignment-building-the-datasets">Extraction and Alignment — Building the Datasets</h2>
+<p>In the first section, we are going to cover the code in the <code>face_extraction_tools.py</code> file.</p>
+<p>Before we can do anything, we need some data to work on. Thus, the first step is to extract the frames from the videos. For that, we are going to build a function that saves the frames as JPEG images. This function takes a path to a video and another path to an output folder where it will save the results in. We also add an optional input that lets us skip on some of the frames (if we want to save time and space, for example, in a case of a long source video). For the destination video, we want to keep all the frames because we want the network to see all the expressions of the face in that video.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_frames_from_video(video_path: Union[<span class="bu">str</span>, Path], output_folder: Union[<span class="bu">str</span>, Path], frames_to_skip: <span class="bu">int</span><span class="op">=</span><span class="dv">0</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Extract frame from video as a JPG images.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">        video_path (str | Path): the path to the input video from it the frame will be extracted</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">        output_folder (str | Path): the folder where the frames will be saved</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">        frames_to_skip (int): how many frames to skip after a frame which is saved. 0 will save all the frames.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">            If, for example, this value is 2, the first frame will be saved, then frame 2 and 3 will be skipped,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">            the 4th frame will be saved, and so on.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    video_path <span class="op">=</span> Path(video_path)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    output_folder <span class="op">=</span> Path(output_folder)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> video_path.exists():</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f'The path to the video file </span><span class="sc">{</span>video_path<span class="sc">.</span>absolute()<span class="sc">}</span><span class="ss"> does not exist'</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> output_folder.exists():</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        output_folder.mkdir(parents<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    video_capture <span class="op">=</span> cv2.VideoCapture(<span class="bu">str</span>(video_path))</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    extract_frame_counter <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    saved_frame_counter <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        ret, frame <span class="op">=</span> video_capture.read()</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> ret:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> extract_frame_counter <span class="op">%</span> (frames_to_skip <span class="op">+</span> <span class="dv">1</span>) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>            cv2.imwrite(<span class="bu">str</span>(output_folder <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>saved_frame_counter<span class="sc">:05d}</span><span class="ss">.jpg'</span>), frame, [cv2.IMWRITE_JPEG_QUALITY, <span class="dv">90</span>])</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>            saved_frame_counter <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        extract_frame_counter <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'</span><span class="sc">{</span>saved_frame_counter<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span>extract_frame_counter<span class="sc">}</span><span class="ss"> frames saved'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The function starts by checking the video file exists and also that the output folder exists, and if it doesn’t, the function will create it. We use OpenCV <em>VideoCapture</em> class to create an object to read the video, and then we go over the video frame by frame and save it as a JPEG file in the output folder. We skip on frames according to the <em>frames_to_skip</em> argument. When the video ends, the next attempt to read a frame will fail, and the <em>ret</em> variable will get <em>False</em>, so we stop and print information about the number of frames that were saved and the total number of frames that were read. The result of this function is a folder with the frames as JPEG images.</p>
+<figure class="figure">
+<img src="images/002.webp" alt="A folder contains the frames saved as JPEG images" class="figure-img">
+<figcaption>
+A folder contains the frames saved as JPEG images
+</figcaption>
+</figure>
+<p>But we aren’t interested in the frames themselves, but in the faces inside them. The next tool we need to build is a face extractor. The tool should have the capability to detect a face in an image, extract it and align it. The last capability is necessary to build a dataset with some standardization so we can feed our network with controllable data. The best way to build such a tool is to create a <em>FaceExtractor</em> class with methods for detection, extraction, and alignment.</p>
+<p>For the detection part, we are going to use <a href="https://opencv.org/blog/2022/11/15/opencv-face-detection-cascade-classifier-vs-yunet/">YuNet</a> with OpenCV. YuNet is a fast and accurate CNN-based face detector that can be utilized by the class <em>FaceDetectorYN</em> from OpenCV. To create such a <em>FaceDetectorYN</em> object, we need an ONNX file with the weights. The file can be found in <a href="https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet">OpenCV Zoo</a> and the current version is called “face_detection_yunet_2023mar.onnx”.</p>
+<p>The first thing we need our tool to do, therefore, is to get the weights. We can do it in the <code>__init__()</code> method:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, image_size):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">        Create a YuNet face detector to get face from image of size 'image_size'. The YuNet model</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">        will be downloaded from opencv zoo, if it's not already exist.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">            image_size (tuple): a tuple of (width: int, height: int) of the image to be analyzed</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        detection_model_path <span class="op">=</span> Path(<span class="st">'models/face_detection_yunet_2023mar.onnx'</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> detection_model_path.exists():</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            detection_model_path.parent.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            url <span class="op">=</span> <span class="st">"https://github.com/opencv/opencv_zoo/blob/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Downloading face detection model...'</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            filename, headers <span class="op">=</span> urlretrieve(url, filename<span class="op">=</span><span class="bu">str</span>(detection_model_path))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Download finish!'</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.detector <span class="op">=</span> cv2.FaceDetectorYN.create(<span class="bu">str</span>(detection_model_path), <span class="st">""</span>, image_size)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Here, the method checks if the weights file exists, and if not, it will be downloaded from the web. Then a FaceDetectorYN object is created using the weights file and the image to be analyzed size.</p>
+<p>The <em>detect</em> method used the YuNet detect method to find faces in the image:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> detect(<span class="va">self</span>, image):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        ret, faces <span class="op">=</span> <span class="va">self</span>.detector.detect(image)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> ret, faces</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The output of YuNet is a 2D array with size [num_faces, 15] with the following information:</p>
+<ul>
+<li>0–1: x, y of the bounding box top left corner</li>
+<li>2–3: width, height of the bounding box</li>
+<li>4–5: x, y of the right eye (blue point in the example image)</li>
+<li>6–7: x, y of the left eye (red point in the example image)</li>
+<li>8–9: x, y of nose tip (green point in the example image)</li>
+<li>10–11: x, y of the right corner of the mouth (pink point in the example image)</li>
+<li>12–13: x, y of the left corner of the mouth (yellow point in the example image)</li>
+<li>14: face score</li>
+</ul>
+<figure class="figure">
+<img src="images/003.webp" alt="Face landmarks visualization from OpenCV documentation" class="figure-img">
+<figcaption>
+Image from OpenCV <a href="https://docs.opencv.org/4.x/df/d20/classcv_1_1FaceDetectorYN.html"> documentation </a>
+</figcaption>
+</figure>
+<p>Now we have the face position data, and we can use it to get an aligned image of the face. For that, we will leverage the information about the position of the eyes. We want the eyes to be at the same level (the same y-coordinate) in the aligned image. Also, we want to choose the relative position of the eyes in the face image.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>    <span class="at">@staticmethod</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> align(image, face, desired_face_width<span class="op">=</span><span class="dv">256</span>, left_eye_desired_coordinate<span class="op">=</span>np.array((<span class="fl">0.37</span>, <span class="fl">0.37</span>))):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">        Align the face so the eyes will be at the same level</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">            image (np.ndarray): image with face</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">            face (np.ndarray):  face coordinates from the detection step</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">            desired_face_width (int): the final width of the aligned face image</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">            left_eye_desired_coordinate (np.ndarray): a length 2 array of values between</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">             0 and 1 where the left eye should be in the aligned image</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">            (np.ndarray): aligned face image</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        desired_face_height <span class="op">=</span> desired_face_width</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        right_eye_desired_coordinate <span class="op">=</span> np.array((<span class="dv">1</span> <span class="op">-</span> left_eye_desired_coordinate[<span class="dv">0</span>], left_eye_desired_coordinate[<span class="dv">1</span>]))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># get coordinate of the center of the eyes in the image</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        right_eye <span class="op">=</span> face[<span class="dv">4</span>:<span class="dv">6</span>]</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        left_eye <span class="op">=</span> face[<span class="dv">6</span>:<span class="dv">8</span>]</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># compute the angle of the right eye relative to the left eye</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        dist_eyes_x <span class="op">=</span> right_eye[<span class="dv">0</span>] <span class="op">-</span> left_eye[<span class="dv">0</span>]</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        dist_eyes_y <span class="op">=</span> right_eye[<span class="dv">1</span>] <span class="op">-</span> left_eye[<span class="dv">1</span>]</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        dist_between_eyes <span class="op">=</span> np.sqrt(dist_eyes_x <span class="op">**</span> <span class="dv">2</span> <span class="op">+</span> dist_eyes_y <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        angles_between_eyes <span class="op">=</span> np.rad2deg(np.arctan2(dist_eyes_y, dist_eyes_x) <span class="op">-</span> np.pi)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        eyes_center <span class="op">=</span> (left_eye <span class="op">+</span> right_eye) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        desired_dist_between_eyes <span class="op">=</span> desired_face_width <span class="op">*</span> (</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>                    right_eye_desired_coordinate[<span class="dv">0</span>] <span class="op">-</span> left_eye_desired_coordinate[<span class="dv">0</span>])</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        scale <span class="op">=</span> desired_dist_between_eyes <span class="op">/</span> dist_between_eyes</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        M <span class="op">=</span> cv2.getRotationMatrix2D(eyes_center, angles_between_eyes, scale)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        M[<span class="dv">0</span>, <span class="dv">2</span>] <span class="op">+=</span> <span class="fl">0.5</span> <span class="op">*</span> desired_face_width <span class="op">-</span> eyes_center[<span class="dv">0</span>]</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        M[<span class="dv">1</span>, <span class="dv">2</span>] <span class="op">+=</span> left_eye_desired_coordinate[<span class="dv">1</span>] <span class="op">*</span> desired_face_height <span class="op">-</span> eyes_center[<span class="dv">1</span>]</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        face_aligned <span class="op">=</span> cv2.warpAffine(image, M, (desired_face_width, desired_face_height), flags<span class="op">=</span>cv2.INTER_CUBIC)</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> face_aligned</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The method gets the image and the information for a single face, together with the width of the output image and the desired relative position of the left eye. The method assumes the output image is squared and that the desired position of the right eye has the same y-position and <span class="math inline">\(1 - \text{left\_eye\_x}\)</span> for the x position. The distance and the angle between the eyes are calculated, as well as the center point between them. Using the desired width and the desired positions of the eyes, a scale factor can be calculated. Using the center of the eyes, the angle between them, and the scale factor, a transformation matrix is created. Then, x and y translation components are added to the matrix to move the face so the center of the eyes will move to the right position in the final image. Finally, the transformation is applied to the original image to get the aligned face image. It’s important to notice that in this way, we don’t distort the original face in the image.</p>
+<p>The final method is the extract method, which is similar to the align method but without the transformation, and it also returns the bounding box of the face in the image.</p>
+<p>With our new face tools, we can write a function to take the frames we have already extracted and get a standard version of the faces from them, which will be saved in a new folder called “aligned” as our dataset for the neural network.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_and_align_face_from_image(input_dir: Union[<span class="bu">str</span>, Path], desired_face_width: <span class="bu">int</span><span class="op">=</span><span class="dv">256</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Extract the face from an image, align it and save to a directory inside in the input directory</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">        input_dir (str|Path): path to the directory contains the images extracted from a video</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">        desired_face_width (int): the width of the aligned imaged in pixels</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    input_dir <span class="op">=</span> Path(input_dir)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    output_dir <span class="op">=</span> input_dir <span class="op">/</span> <span class="st">'aligned'</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> output_dir.exists():</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        rmtree(output_dir)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    output_dir.mkdir()</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> cv2.imread(<span class="bu">str</span>(input_dir <span class="op">/</span> <span class="st">'00000.jpg'</span>))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    image_height <span class="op">=</span> image.shape[<span class="dv">0</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    image_width <span class="op">=</span> image.shape[<span class="dv">1</span>]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    detector <span class="op">=</span> FaceExtractor((image_width, image_height))</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> image_path <span class="kw">in</span> tqdm(<span class="bu">list</span>(input_dir.glob(<span class="st">'*.jpg'</span>))):</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> cv2.imread(<span class="bu">str</span>(image_path))</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        ret, faces <span class="op">=</span> detector.detect(image)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> faces <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        face_aligned <span class="op">=</span> detector.align(image, faces[<span class="dv">0</span>, :], desired_face_width)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        cv2.imwrite(<span class="bu">str</span>(output_dir <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>image_path<span class="sc">.</span>name<span class="sc">}</span><span class="ss">'</span>), face_aligned, [cv2.IMWRITE_JPEG_QUALITY, <span class="dv">90</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<figure class="figure">
+<img src="images/004.webp" alt="The results of the extract_and_align_face_from_image function" class="figure-img">
+<figcaption>
+The results of the extract_and_align_face_from_image function
+</figcaption>
+</figure>
+</section>
+<section id="training-the-network" class="level2">
+<h2 class="anchored" data-anchor-id="training-the-network">Training the Network</h2>
+<p>For the network, we are going to use the concept of AutoEncoder. In the AutoEncoder, we have two main components — An encoder and a decoder. The encoder takes the original image and finds a latent representation of it. Then, the decoder takes the latent representation and reconstructs the original image.</p>
+<p>For our task, we want to train an encoder to find a latent face representation and two decoders — one that can reconstruct the source face and the other that can reconstruct the destination face.</p>
+<figure class="figure">
+<img src="images/005.webp" alt="The basic architecture of AutoEncoder" class="figure-img">
+<figcaption>
+The basic architecture of AutoEncoder
+</figcaption>
+</figure>
+<p>After the three components are trained, we can go back to our original goal: to create an image of the source face but with the destination expression. For that, we can use decoder A with an image of face B.</p>
+<figure class="figure">
+<img src="images/006.webp" alt="Swapping faces using shared encoder and dedicated decoders" class="figure-img">
+</figure>
+<p>The latent face keeps the main features of the face, such as position, orientation, and expression. The decoder takes this coded information and learns how to construct a full-face image. Since decoder A knows only how to construct a face of type A, it takes the features of image B from the encoder and constructs from them an image of type A.</p>
+<p>In this project, we are going to use a little edited version of the Quick96 architecture from the original <a href="https://github.com/iperov/DeepFaceLab">DeepFaceLab</a> project.</p>
+<figure class="figure">
+<img src="images/007.webp" alt="The basic architecture from DeepFaceLab" class="figure-img">
+<figcaption>
+The basic architecture from DeepFaceLab as in the paper <a href="https://arxiv.org/pdf/2005.05535.pdf"> DeepFaceLab: Integrated, flexible and extensible face-swapping framework </a>
+</figcaption>
+</figure>
+<p>The full details of the network can be seen in the code in the GitHub project inside the <a href="https://github.com/dorzv/ComputerVision/blob/master/face_swap/quick96.py">quick96.py</a> file.</p>
+<p>But before we can train the model, we first need to work on the data. To make our model robust and avoid overfitting, we want to apply two types of augmentation on the original face images. The first one is general transformations, including rotation, scaling, translation in both x and y directions, and horizontal flipping. For each transformation, we define a range for the parameters or probability (for example, the range of angles we can use to rotate) and then select a random value from the range to apply to the image.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>random_transform_args <span class="op">=</span> {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rotation_range'</span>: <span class="dv">10</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'zoom_range'</span>: <span class="fl">0.05</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'shift_range'</span>: <span class="fl">0.05</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'random_flip'</span>: <span class="fl">0.5</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_transform(image, rotation_range, zoom_range, shift_range, random_flip):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Make a random transformation for an image, including rotation, zoom, shift and flip.</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">        image (np.array): an image to be transformed</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">        rotation_range (float): the range of possible angles to rotate - [-rotation_range, rotation_range]</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">        zoom_range (float): range of possible scales - [1 - zoom_range, 1 + zoom_range]</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">        shift_range (float): the percent of translation for x  and y</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">        random_flip (float): the probability of horizontal flip</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">        (np.array): transformed image</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    h, w <span class="op">=</span> image.shape[<span class="dv">0</span>:<span class="dv">2</span>]</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    rotation <span class="op">=</span> np.random.uniform(<span class="op">-</span>rotation_range, rotation_range)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    scale <span class="op">=</span> np.random.uniform(<span class="dv">1</span> <span class="op">-</span> zoom_range, <span class="dv">1</span> <span class="op">+</span> zoom_range)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    tx <span class="op">=</span> np.random.uniform(<span class="op">-</span>shift_range, shift_range) <span class="op">*</span> w</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    ty <span class="op">=</span> np.random.uniform(<span class="op">-</span>shift_range, shift_range) <span class="op">*</span> h</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    mat <span class="op">=</span> cv2.getRotationMatrix2D((w <span class="op">//</span> <span class="dv">2</span>, h <span class="op">//</span> <span class="dv">2</span>), rotation, scale)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    mat[:, <span class="dv">2</span>] <span class="op">+=</span> (tx, ty)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> cv2.warpAffine(image, mat, (w, h), borderMode<span class="op">=</span>cv2.BORDER_REPLICATE)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> np.random.random() <span class="op">&lt;</span> random_flip:</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> result[:, ::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The second type is a distortion made by warping the image using an interpolation map with noise. The distortion will force the model to understand what are the key features of the face and make it more general.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_warp(image):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Create a distorted face image and a target undistorted image</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">        image  (np.array): image to warp</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">        (np.array): warped version of the image</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">        (np.array): target image to construct from the warped version</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    h, w <span class="op">=</span> image.shape[:<span class="dv">2</span>]</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># build coordinate map to warp the image according to</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    range_ <span class="op">=</span> np.linspace(h <span class="op">/</span> <span class="dv">2</span> <span class="op">-</span> h <span class="op">*</span> <span class="fl">0.4</span>, h <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> h <span class="op">*</span> <span class="fl">0.4</span>, <span class="dv">5</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    mapx <span class="op">=</span> np.broadcast_to(range_, (<span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    mapy <span class="op">=</span> mapx.T</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add noise to get a distortion of the face while warp the image</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    mapx <span class="op">=</span> mapx <span class="op">+</span> np.random.normal(size<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>), scale<span class="op">=</span><span class="dv">5</span><span class="op">*</span>h<span class="op">/</span><span class="dv">256</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    mapy <span class="op">=</span> mapy <span class="op">+</span> np.random.normal(size<span class="op">=</span>(<span class="dv">5</span>, <span class="dv">5</span>), scale<span class="op">=</span><span class="dv">5</span><span class="op">*</span>h<span class="op">/</span><span class="dv">256</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get interpolation map for the center of the face with size of (96, 96)</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    interp_mapx <span class="op">=</span> cv2.resize(mapx, (<span class="bu">int</span>(w <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>)) , <span class="bu">int</span>(h <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>))))[<span class="bu">int</span>(w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>):<span class="bu">int</span>(w <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>) <span class="op">-</span> w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>), <span class="bu">int</span>(w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>):<span class="bu">int</span>(w <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>) <span class="op">-</span> w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>)].astype(<span class="st">'float32'</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    interp_mapy <span class="op">=</span> cv2.resize(mapy, (<span class="bu">int</span>(w <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>)) , <span class="bu">int</span>(h <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>))))[<span class="bu">int</span>(w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>):<span class="bu">int</span>(w <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>) <span class="op">-</span> w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>), <span class="bu">int</span>(w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>):<span class="bu">int</span>(w <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span>) <span class="op">-</span> w<span class="op">/</span><span class="dv">2</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">/</span><span class="dv">2</span>)].astype(<span class="st">'float32'</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># remap the face image according to the interpolation map to get warp version</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    warped_image <span class="op">=</span> cv2.remap(image, interp_mapx, interp_mapy, cv2.INTER_LINEAR)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create the target (undistorted) image</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># find a transformation to go from the source coordinates to the destination coordinate</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    src_points <span class="op">=</span> np.stack([mapx.ravel(), mapy.ravel()], axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    dst_points <span class="op">=</span> np.mgrid[<span class="dv">0</span>:w<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">1</span>:w<span class="op">//</span><span class="dv">8</span>, <span class="dv">0</span>:h<span class="op">//</span><span class="dv">2</span><span class="op">+</span><span class="dv">1</span>:h<span class="op">//</span><span class="dv">8</span>].T.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We want to find a similarity matrix (scale rotation and translation) between the</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># source and destination points. The matrix should have the structure</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [[a, -b, c],</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">#  [b,  a, d]]</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># so we can construct unknown vector [a, b, c, d] and solve for it using least</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># squares with the source and destination x and y points.</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> np.zeros((<span class="dv">2</span> <span class="op">*</span> src_points.shape[<span class="dv">0</span>], <span class="dv">2</span>))</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    A[<span class="dv">0</span>::<span class="dv">2</span>, :] <span class="op">=</span> src_points  <span class="co"># [x, y]</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    A[<span class="dv">0</span>::<span class="dv">2</span>, <span class="dv">1</span>] <span class="op">=</span> <span class="op">-</span>A[<span class="dv">0</span>::<span class="dv">2</span>, <span class="dv">1</span>] <span class="co"># [x, -y]</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    A[<span class="dv">1</span>::<span class="dv">2</span>, :] <span class="op">=</span> src_points[:, ::<span class="op">-</span><span class="dv">1</span>]  <span class="co"># [y, x]</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> np.hstack((A, np.tile(np.eye(<span class="dv">2</span>), (src_points.shape[<span class="dv">0</span>], <span class="dv">1</span>))))  <span class="co"># [x, -y, 1, 0] for x coordinate and [y, x, 0 ,1] for y coordinate</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> dst_points.flatten()  <span class="co"># arrange as [x0, y0, x1, y1, ..., xN, yN]</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    similarity_mat <span class="op">=</span> np.linalg.lstsq(A, b, rcond<span class="op">=</span><span class="va">None</span>)[<span class="dv">0</span>] <span class="co"># get the similarity matrix elements as vector [a, b, c, d]</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># construct the similarity matrix from the result vector of the least squares</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    similarity_mat <span class="op">=</span> np.array([[similarity_mat[<span class="dv">0</span>], <span class="op">-</span>similarity_mat[<span class="dv">1</span>], similarity_mat[<span class="dv">2</span>]],</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>                               [similarity_mat[<span class="dv">1</span>], similarity_mat[<span class="dv">0</span>], similarity_mat[<span class="dv">3</span>]]])</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># use the similarity matrix to construct the target image using affine transformation</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    target_image <span class="op">=</span> cv2.warpAffine(image, similarity_mat, (w <span class="op">//</span> <span class="dv">2</span>, h <span class="op">//</span> <span class="dv">2</span>))</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> warped_image, target_image</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This function can be a little hard to understand, but basically, it has two parts. In the first one, we start by creating a coordinate map of the image at the area around the face itself. There is a map for the x-coordinate and a map for the y-coordinate. The values in the <em>mapx</em> and <em>mapy</em> variables are coordinates in pixels. Then, we add some noise to the maps to move the coordinate in random directions. Then we resize the maps, which makes an interpolation between the coordinates, but together with the noise we have added, we get a distorted coordinates map (pixels move a little bit in random directions). We also crop the interpolated maps to contain the center of the face with a size of <span class="math inline">\(96 \times 96\)</span> pixels. Now we can use the distorted map to remap the image accordingly and get a new distorted image.</p>
+<p>In the second part, we want to create the undistorted image, which is the target image that the model should create from the distorted one. We use the noisy maps as the source coordinates and define a set of destination coordinates for the target image. Then we use least squares to find a similarity transformation matrix (scale rotation and translation) that maps from the source coordinates to the destination ones and apply it to the image to get the target image.</p>
+<figure class="figure">
+<img src="images/008.webp" alt="Distorted and target images" class="figure-img">
+<figcaption>
+Distorted and target images
+</figcaption>
+</figure>
+<p>Now it’s time to implement a Dataset class to handle the data. Our FaceData class is pretty straightforward. It gets the path to the folder containing the <em>src</em> and <em>dst</em> folder with the data we created in the previous part and returns random source and destination images with a size of <span class="math inline">\((2 \times 96, 2 \times 96)\)</span> normalized to 1. But what we really want our network to get is a transformed and distorted image and a target image for both the source and destination faces. To handle that, we implement a <a href="https://pytorch.org/docs/stable/data.html#dataloader-collate-fn">collate_fn</a>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> collate_fn(<span class="va">self</span>, batch):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">        Collate function to arrange the data returns from a batch. The batch returns a list</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">        of tuples contains pairs of source and destination images, which is the input of this</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">        function, and the function returns a tuple with 4 4D tensors of the warp and target</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">        images for the source and destination</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">            batch (list): a list of tuples contains pairs of source and destination images</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">                as numpy array</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">            (torch.Tensor): a 4D tensor of the warp version of the source images</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">            (torch.Tensor): a 4D tensor of the target source images</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">            (torch.Tensor): a 4D tensor of the warp version of the destination images</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">            (torch.Tensor): a 4D tensor of the target destination images</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        images_src, images_dst <span class="op">=</span> <span class="bu">list</span>(<span class="bu">zip</span>(<span class="op">*</span>batch))  <span class="co"># convert list of tuples with pairs of images into tuples of source and destination images</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        warp_image_src, target_image_src <span class="op">=</span> get_training_data(images_src, <span class="bu">len</span>(images_src))</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        warp_image_src <span class="op">=</span> torch.tensor(warp_image_src, dtype<span class="op">=</span>torch.float32).permute(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>).to(device)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        target_image_src <span class="op">=</span> torch.tensor(target_image_src, dtype<span class="op">=</span>torch.float32).permute(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>).to(device)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        warp_image_dst, target_image_dst <span class="op">=</span> get_training_data(images_dst, <span class="bu">len</span>(images_dst))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        warp_image_dst <span class="op">=</span> torch.tensor(warp_image_dst, dtype<span class="op">=</span>torch.float32).permute(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>).to(device)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        target_image_dst <span class="op">=</span> torch.tensor(target_image_dst, dtype<span class="op">=</span>torch.float32).permute(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>).to(device)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> warp_image_src, target_image_src, warp_image_dst, target_image_dst</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When we get data from a Dataloader object, it will return a tuple with pairs of source and destination images from the FaceData object. Our <code>collate_fn</code> takes this and performs the transformation and distortion on the images, gets the target images, and returns four 4D tensors for the distorted source images, target source images, distorted destination images, and target destination images.</p>
+<p>Now we want to define a train function. We start by creating a Dataset and DataLoader, and initializing the components of the network. We also set optimizers and define a loss function. The loss function we are going to use is a combination of the MSE (L2) loss and the DSSIM (the dissimilarity version of the SSIM), which we implement ourselves at the function <em>dssim</em>. You can learn more about the SSIM metric from this <a href="https://medium.com/srm-mic/all-about-structural-similarity-index-ssim-theory-code-in-pytorch-6551b455541e">post</a>.</p>
+<p>The training goes until the user stops it. When it runs, it will show a dashboard with the loss and the results. You can refresh it by pressing “r” or finish and save the model by pressing “q”. By default, if previous model weights exist, the train function will load them and continue the training from where it stops.</p>
+<figure class="figure">
+<img src="images/009.webp" alt="Dashboard during training showing loss and image reconstructions" class="figure-img">
+<figcaption>
+The dashboard in the middle of the training. In the upper part, the loss as a function of the epoch is presented. At the lower part from left to right are the reconstructed image of the source, the target image of the source, the reconstructed image of the destination, the target image of the destination, and the fake image
+</figcaption>
+</figure>
+<figure class="figure">
+<img src="images/010.webp" alt="Results after 1000 epochs" class="figure-img">
+<figcaption>
+Results after 1000 epochs
+</figcaption>
+</figure>
+</section>
+<section id="generating-the-fake-video" class="level2">
+<h2 class="anchored" data-anchor-id="generating-the-fake-video">Generating the Fake Video</h2>
+<p>In the last step, we want to create the fake video. The function that handles this task is called <code>merge_frame_to_fake_video.py</code>. But before we create this function, we need to build another tool. Our goal is to replace just the face itself and not the head. As you can see from the network results, the output contains more than just the face (face = from the chin to a little above the eyebrows). So we need a tool to mask just the face itself. For that, we create the <code>FaceMasking</code> class. This class uses <a href="https://developers.google.com/mediapipe/solutions/vision/face_landmarker">MediaPipe face landmark detection</a> tool to find the face and mask them.</p>
+<p>When initiating a <code>FaceMasking</code> object, it searches for the face landmark model weights, and if it can’t find them, they will be downloaded from the web. Using these weights, a MediaPipe face landmark detector is initialized.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FaceMasking:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        landmarks_model_path <span class="op">=</span> Path(<span class="st">'models/face_landmarker.task'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> landmarks_model_path.exists():</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>            landmarks_model_path.parent.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>            url <span class="op">=</span> <span class="st">"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Downloading face landmarks model...'</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            filename, headers <span class="op">=</span> urlretrieve(url, filename<span class="op">=</span><span class="bu">str</span>(landmarks_model_path))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Download finish!'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        base_options <span class="op">=</span> python_mp.BaseOptions(model_asset_path<span class="op">=</span><span class="bu">str</span>(landmarks_model_path))</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        options <span class="op">=</span> vision.FaceLandmarkerOptions(base_options<span class="op">=</span>base_options,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                                               output_face_blendshapes<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                                               output_facial_transformation_matrixes<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                                               num_faces<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.detector <span class="op">=</span> vision.FaceLandmarker.create_from_options(options)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The class also has a method to get the mask from a face image:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_mask(<span class="va">self</span>, image):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">        return uint8 mask of the face in image</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">            image (np.ndarray): RGB image with single face</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">            (np.ndarray): single channel uint8 mask of the face</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        im_mp <span class="op">=</span> mp.Image(image_format<span class="op">=</span>mp.ImageFormat.SRGB, data<span class="op">=</span>image.astype(np.uint8).copy())</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        detection_result <span class="op">=</span> <span class="va">self</span>.detector.detect(im_mp)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> np.array([landmark.x <span class="op">*</span> image.shape[<span class="dv">1</span>] <span class="cf">for</span> landmark <span class="kw">in</span> detection_result.face_landmarks[<span class="dv">0</span>]], dtype<span class="op">=</span>np.float32)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> np.array([landmark.y <span class="op">*</span> image.shape[<span class="dv">0</span>] <span class="cf">for</span> landmark <span class="kw">in</span> detection_result.face_landmarks[<span class="dv">0</span>]], dtype<span class="op">=</span>np.float32)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        hull <span class="op">=</span> np.<span class="bu">round</span>(np.squeeze(cv2.convexHull(np.column_stack((x, y))))).astype(np.int32)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        mask <span class="op">=</span> np.zeros(image.shape[:<span class="dv">2</span>], dtype<span class="op">=</span>np.uint8)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        mask <span class="op">=</span> cv2.fillConvexPoly(mask, hull, <span class="dv">255</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        kernel <span class="op">=</span> np.ones((<span class="dv">7</span>, <span class="dv">7</span>), np.uint8)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        mask <span class="op">=</span> cv2.erode(mask, kernel)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> mask</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The function first converts the input image into a MediaPipe image structure and then uses the face landmark detector to find the landmarks. The landmarks are in relative coordinate units (between 0 to 1), so we convert them to x and y coordinates in pixels. Then we find a <a href="https://learnopencv.com/convex-hull-using-opencv-in-python-and-c/">convex hull</a> of the points using OpenCV and make a binary mask by filling the area of the convex hull using OpenCV <em>fillConvexPoly</em> function. In the end, we apply an <a href="https://docs.opencv.org/3.4/db/df6/tutorial_erosion_dilatation.html">erosion</a> operation to shrink the mask a little bit.</p>
+<p>Now we have all we need to create the fake video, and we can go back to the function <em>merge_frame_to_fake_video</em>. First, we initialize all the components we will need: creating a new video object, a FaceExtractor object, a FaceMasking object, creating the neural network components, and loading their weights.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> merge_frames_to_fake_video(dst_frames_path, model_name<span class="op">=</span><span class="st">'Quick96'</span>, saved_models_dir<span class="op">=</span><span class="st">'saved_model'</span>):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    model_path <span class="op">=</span> Path(saved_models_dir) <span class="op">/</span> <span class="ss">f'</span><span class="sc">{</span>model_name<span class="sc">}</span><span class="ss">.pth'</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    dst_frames_path <span class="op">=</span> Path(dst_frames_path)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> Image.<span class="bu">open</span>(<span class="bu">next</span>(dst_frames_path.glob(<span class="st">'*.jpg'</span>)))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    image_size <span class="op">=</span> image.size</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    result_video <span class="op">=</span> cv2.VideoWriter(<span class="bu">str</span>(dst_frames_path.parent <span class="op">/</span> <span class="st">'fake.mp4'</span>), cv2.VideoWriter_fourcc(<span class="op">*</span><span class="st">'MJPG'</span>), <span class="dv">30</span>, image.size)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    face_extractor <span class="op">=</span> FaceExtractor(image_size)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    face_masker <span class="op">=</span> FaceMasking()</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    encoder <span class="op">=</span> Encoder().to(device)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    inter <span class="op">=</span> Inter().to(device)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    decoder <span class="op">=</span> Decoder().to(device)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    saved_model <span class="op">=</span> torch.load(model_path)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    encoder.load_state_dict(saved_model[<span class="st">'encoder'</span>])</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    inter.load_state_dict(saved_model[<span class="st">'inter'</span>])</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    decoder.load_state_dict(saved_model[<span class="st">'decoder_src'</span>])</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> torch.nn.Sequential(encoder, inter, decoder)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then we go over all the frames in the destination video, read them, and find the face in them. If there is no face, we just write the frame into the video. If there is a face, we extract it, convert it to a proper input to the network and generate the fake face. Then we mask the original and the fake face and find the center of the original face using moments on the mask image. We use <a href="https://learnopencv.com/seamless-cloning-using-opencv-python-cpp/">seamless cloning</a> to insert the fake face instead of the original face in a realistic way (for example, changing the fake face’s skin color to suit the original face skin). And finally, we put the result back to the original frame as a new fake frame and write it to the video file.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>    frames_list <span class="op">=</span> <span class="bu">sorted</span>(dst_frames_path.glob(<span class="st">'*.jpg'</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ii, frame_path <span class="kw">in</span> <span class="bu">enumerate</span>(frames_list, <span class="dv">1</span>):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Working on </span><span class="sc">{</span>ii<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span><span class="bu">len</span>(frames_list)<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        frame <span class="op">=</span> cv2.imread(<span class="bu">str</span>(frame_path))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        retval, face <span class="op">=</span> face_extractor.detect(frame)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> face <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            result_video.write(frame)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        face_image, face <span class="op">=</span> face_extractor.extract(frame, face[<span class="dv">0</span>])</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        face_image <span class="op">=</span> face_image[..., ::<span class="op">-</span><span class="dv">1</span>].copy()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        face_image_cropped <span class="op">=</span> cv2.resize(face_image, (<span class="dv">96</span>, <span class="dv">96</span>)) <span class="co">#face_image_resized[96//2:96+96//2, 96//2:96+96//2]</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        face_image_cropped_torch <span class="op">=</span> torch.tensor(face_image_cropped <span class="op">/</span> <span class="fl">255.</span>, dtype<span class="op">=</span>torch.float32).permute(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>).unsqueeze(<span class="dv">0</span>).to(device)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        generated_face_torch <span class="op">=</span> model(face_image_cropped_torch)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        generated_face <span class="op">=</span> (generated_face_torch.squeeze().permute(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>).detach().cpu().numpy() <span class="op">*</span> <span class="dv">255</span>).astype(np.uint8)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        mask_origin <span class="op">=</span> face_masker.get_mask(face_image_cropped)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        mask_fake <span class="op">=</span> face_masker.get_mask(generated_face)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        origin_moments <span class="op">=</span> cv2.moments(mask_origin)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        cx <span class="op">=</span> np.<span class="bu">round</span>(origin_moments[<span class="st">'m10'</span>] <span class="op">/</span> origin_moments[<span class="st">'m00'</span>]).astype(<span class="bu">int</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>        cy <span class="op">=</span> np.<span class="bu">round</span>(origin_moments[<span class="st">'m01'</span>] <span class="op">/</span> origin_moments[<span class="st">'m00'</span>]).astype(<span class="bu">int</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>            output_face <span class="op">=</span> cv2.seamlessClone(generated_face, face_image_cropped, mask_fake, (cx, cy), cv2.NORMAL_CLONE)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span>:</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'Skip'</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>        fake_face_image <span class="op">=</span> cv2.resize(output_face, (face_image.shape[<span class="dv">1</span>], face_image.shape[<span class="dv">0</span>]))</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        fake_face_image <span class="op">=</span> fake_face_image[..., ::<span class="op">-</span><span class="dv">1</span>] <span class="co"># change to BGR</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        frame[face[<span class="dv">1</span>]:face[<span class="dv">1</span>]<span class="op">+</span>face[<span class="dv">3</span>], face[<span class="dv">0</span>]:face[<span class="dv">0</span>]<span class="op">+</span>face[<span class="dv">2</span>]] <span class="op">=</span> fake_face_image</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        result_video.write(frame)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    result_video.release()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let’s look at the results:</p>
+<figure class="figure">
+<img src="images/011.webp" alt="A fake frame (left) and the original frame (right)" class="figure-img">
+<figcaption>
+A fake frame (left) and the original frame (right)
+</figcaption>
+</figure>
+<p>Pretty good for such a simple model. Of course, the model is not perfect, and some angles of the face, especially a side view, will result in less impressive images, but overall the results are good.</p>
+</section>
+<section id="putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="putting-it-all-together">Putting It All Together</h2>
+<p>To run the entire process, we create a <em>main</em> script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> face_extraction_tools <span class="im">as</span> fet</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quick96 <span class="im">as</span> q96</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> merge_frame_to_fake_video <span class="im">import</span> merge_frames_to_fake_video</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">##### user parameters #####</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># True for executing the step</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>extract_and_align_src <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>extract_and_align_dst <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="bu">eval</span> <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>model_name <span class="op">=</span> <span class="st">'Quick96'</span>  <span class="co"># use this name to save and load the model</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>new_model <span class="op">=</span> <span class="va">False</span>  <span class="co"># True for creating a new model even if a model with the same name already exists</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">##### end of user parameters #####</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># the path for the videos to process</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>data_root <span class="op">=</span> Path(<span class="st">'./data'</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>src_video_path <span class="op">=</span> data_root <span class="op">/</span> <span class="st">'data_src.mp4'</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>dst_video_path <span class="op">=</span> data_root <span class="op">/</span> <span class="st">'data_dst.mp4'</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co"># path to folders where the intermediate product will be saved</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>src_processing_folder <span class="op">=</span> data_root <span class="op">/</span> <span class="st">'src'</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>dst_processing_folder <span class="op">=</span> data_root <span class="op">/</span> <span class="st">'dst'</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># step 1: extract the frames from the videos</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> extract_and_align_src:</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    fet.extract_frames_from_video(video_path<span class="op">=</span>src_video_path, output_folder<span class="op">=</span>src_processing_folder, frames_to_skip<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> extract_and_align_dst:</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    fet.extract_frames_from_video(video_path<span class="op">=</span>dst_video_path, output_folder<span class="op">=</span>dst_processing_folder, frames_to_skip<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co"># step 2: extract and align face from frames</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> extract_and_align_src:</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    fet.extract_and_align_face_from_image(input_dir<span class="op">=</span>src_processing_folder, desired_face_width<span class="op">=</span><span class="dv">256</span>)</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> extract_and_align_dst:</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    fet.extract_and_align_face_from_image(input_dir<span class="op">=</span>dst_processing_folder, desired_face_width<span class="op">=</span><span class="dv">256</span>)</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co"># step 3: train the model</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> train:</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    q96.train(<span class="bu">str</span>(data_root), model_name, new_model, saved_models_dir<span class="op">=</span><span class="st">'saved_model'</span>)</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co"># step 4: create the fake video</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">eval</span>:</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>    merge_frames_to_fake_video(dst_processing_folder, model_name, saved_models_dir<span class="op">=</span><span class="st">'saved_model'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first part is where the user can control the parameters: each of the four steps to run, the name for the model, and if to create a new model (even if a model with the same name exists). Then the paths to the data and to the output folders are created, and finally, the steps to create the fake video are called:</p>
+<ol type="1">
+<li>Extract the frames from the videos</li>
+<li>Extract and align face from frames</li>
+<li>Train the model</li>
+<li>Create the fake video</li>
+</ol>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In this post, we saw how to build a deep fake face swap program. We start by extracting the frames from the videos, then we extract the faces from the frames and align them to create a database. We use a neural network to learn how to represent a face in some latent space and how to reconstruct the face back. We used the encoded version of the destination face with the decoder of the source to get a fake face with the same expression as the original image but with the face from the other video. Finally, we went over the frames of the destination video, found the face, made a fake face, and used masks to replace the original face with the fake one and created a fake video.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dorzv\.github\.io\/data-notes\/");
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Data Notes</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+<p>About</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/dorzv/ComputerVision/">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

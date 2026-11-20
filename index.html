@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Notes</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./images/favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-83a199cbbb515fae395694f3363d7880.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-article-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-image','listing-categories','listing-title','listing-subtitle','listing-reading-time','listing-author','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-date-modified-sort'] },{ data: ['listing-file-modified-sort'] },{ data: ['listing-reading-time-sort'] },{ data: ['listing-word-count-sort'] }],
+      page: 12,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
+      searchColumns: ["listing-title","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-article-listing'] = new List('listing-article-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+  </script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Data Notes</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html#latest"> 
+<span class="menu-text">Latest</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./editors-picks.html"> 
+<span class="menu-text">Editor’s Picks</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/dorzv/ComputerVision/"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+            <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page" id="quarto-document-content" tabindex="-1"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<div id="listing-article-listing" class="quarto-listing quarto-listing-container-custom">
+<div class="listing-actions-group">
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
+<div class="list article-grid">
+
+  <article class="article-card" data-index="0" data-categories="RGVlcCUyMExlYXJuaW5nJTJDQ29tcHV0ZXIlMjBWaXNpb24lMkNTdGFibGUlMjBEaWZmdXNpb24=" data-listing-date-sort="1791147600000" data-listing-file-modified-sort="1795181065339" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3289">
+
+    
+      <a href="./posts/introduction-to-stable-diffusion-with-hugging-face/index.html" class="article-card-image">
+        <img src="./posts/introduction-to-stable-diffusion-with-hugging-face/images/001.webp" alt="Introduction to Stable Diffusion with Hugging Face">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Stable Diffusion</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/introduction-to-stable-diffusion-with-hugging-face/index.html" class="listing-title">
+          Introduction to Stable Diffusion with Hugging Face
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Build your own image generation pipeline with Stable Diffusion and Hugging Face Step-by-Step
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Oct 5, 2026</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            17 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="1" data-categories="QUklMkNDb21wdXRlciUyMFZpc2lvbiUyQ05MUCUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1785790800000" data-listing-file-modified-sort="1795181065315" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1453">
+
+    
+      <a href="./posts/clip-contrastive-language-image-pre-training/index.html" class="article-card-image">
+        <img src="./posts/clip-contrastive-language-image-pre-training/images/001.webp" alt="CLIP — Contrastive Language-Image Pre-training">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">NLP</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/clip-contrastive-language-image-pre-training/index.html" class="listing-title">
+          CLIP — Contrastive Language-Image Pre-training
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Breaking the Single-Modality Barrier
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 4, 2026</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            8 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="2" data-categories="RGF0YSUyMFNjaWVuY2UlMkNQYW5kYXMlMkNQeXRob24=" data-listing-date-sort="1743195600000" data-listing-file-modified-sort="1795181065348" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="700">
+
+    
+      <a href="./posts/migrating-from-pandas-to-polars-a-comprehensive-guide/index.html" class="article-card-image">
+        <img src="./posts/migrating-from-pandas-to-polars-a-comprehensive-guide/images/cover.webp" alt="Migrating from Pandas to Polars: A Comprehensive Guide">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Pandas</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/migrating-from-pandas-to-polars-a-comprehensive-guide/index.html" class="listing-title">
+          Migrating from Pandas to Polars: A Comprehensive Guide
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Discovering the Benefits of Polars over Pandas
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Mar 29, 2025</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            4 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="3" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RhdGElMjBTY2llbmNlJTJDTWFjaGluZSUyMExlYXJuaW5n" data-listing-date-sort="1740693600000" data-listing-file-modified-sort="1795181065320" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1615">
+
+    
+      <a href="./posts/detr-end-to-end-object-detection-with-transformers/index.html" class="article-card-image">
+        <img src="./posts/detr-end-to-end-object-detection-with-transformers/images/007.webp" alt="DETR: End-to-End Object Detection with Transformers">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Machine Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/detr-end-to-end-object-detection-with-transformers/index.html" class="listing-title">
+          DETR: End-to-End Object Detection with Transformers
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          The Future of Object Detection with Transformers
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Feb 28, 2025</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            9 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="4" data-categories="RGVlcCUyMExlYXJuaW5nJTJDRGF0YSUyMFNjaWVuY2U=" data-listing-date-sort="1738274400000" data-listing-file-modified-sort="1795181065381" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1900">
+
+    
+      <a href="./posts/the-different-types-of-normalizations-in-deep-learning/index.html" class="article-card-image">
+        <img src="./posts/the-different-types-of-normalizations-in-deep-learning/images/004.webp" alt="The Different Types of Normalizations in Deep Learning">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/the-different-types-of-normalizations-in-deep-learning/index.html" class="listing-title">
+          The Different Types of Normalizations in Deep Learning
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Exploring the Types of Normalization in Deep Learning and How They Work
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jan 31, 2025</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            10 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="5" data-categories="RGVlcCUyMExlYXJuaW5nJTJDQ29tcHV0ZXIlMjBWaXNpb24lMkNNYWNoaW5lJTIwTGVhcm5pbmclMkNEYXRhJTIwU2NpZW5jZSUyQ1B5dGhvbg==" data-listing-date-sort="1735336800000" data-listing-file-modified-sort="1795181065342" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3078">
+
+    
+      <a href="./posts/knowledge-distillation-how-networks-can-teach/index.html" class="article-card-image">
+        <img src="./posts/knowledge-distillation-how-networks-can-teach/images/001.webp" alt="Knowledge Distillation — How Networks Can Teach">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Machine Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/knowledge-distillation-how-networks-can-teach/index.html" class="listing-title">
+          Knowledge Distillation — How Networks Can Teach
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          An introduction to teacher-student models
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Dec 28, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            16 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="6" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNEYXRhJTIwU2NpZW5jZSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1732831200000" data-listing-file-modified-sort="1795181065369" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2333">
+
+    
+      <a href="./posts/paper-review-bootstrap-your-own-latent/index.html" class="article-card-image">
+        <img src="./posts/paper-review-bootstrap-your-own-latent/images/001.webp" alt="Paper Review: Bootstrap Your Own Latent (BYOL)">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/paper-review-bootstrap-your-own-latent/index.html" class="listing-title">
+          Paper Review: Bootstrap Your Own Latent (BYOL)
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A New Approach to Self-Supervised Learning
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Nov 29, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            12 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="7" data-categories="RGVlcCUyMExlYXJuaW5nJTJDRGF0YSUyMFNjaWVuY2UlMkNQeVRvcmNo" data-listing-date-sort="1730066400000" data-listing-file-modified-sort="1795181065340" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1694">
+
+    
+      <a href="./posts/introduction-to-tensorrt/index.html" class="article-card-image">
+        <img src="./posts/introduction-to-tensorrt/images/001.webp" alt="Introduction to TensorRT">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">PyTorch</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/introduction-to-tensorrt/index.html" class="listing-title">
+          Introduction to TensorRT
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          How to accelerate deep learning inference time
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Oct 28, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            9 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="8" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNEZWVwJTIwTGVhcm5pbmc=" data-listing-date-sort="1727470800000" data-listing-file-modified-sort="1795181065372" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="23" data-listing-word-count-sort="4414">
+
+    
+      <a href="./posts/self-supervised-learning-for-visual-representation/index.html" class="article-card-image">
+        <img src="./posts/self-supervised-learning-for-visual-representation/images/002.webp" alt="Self-Supervised Learning for Visual Representation">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/self-supervised-learning-for-visual-representation/index.html" class="listing-title">
+          Self-Supervised Learning for Visual Representation
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          How we can improve our models by using unlabeled data.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 28, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            23 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="9" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNEZWVwJTIwTGVhcm5pbmclMkNQeXRob24=" data-listing-date-sort="1724965200000" data-listing-file-modified-sort="1795181065385" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="40" data-listing-word-count-sort="7921">
+
+    
+      <a href="./posts/visual-transformer/index.html" class="article-card-image">
+        <img src="./posts/visual-transformer/images/001.webp" alt="Visual Transformer (ViT)">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/visual-transformer/index.html" class="listing-title">
+          Visual Transformer (ViT)
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          An introduction to the Visual Transformer architecture, its main ideas and implementation.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 30, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            40 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="10" data-categories="RGVlcCUyMExlYXJuaW5nJTJDRGF0YSUyMFNjaWVuY2U=" data-listing-date-sort="1721941200000" data-listing-file-modified-sort="1795181065322" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1881">
+
+    
+      <a href="./posts/from-attention-to-self-attention-and-transformers-a-mathematical-introduction/index.html" class="article-card-image">
+        <img src="./posts/from-attention-to-self-attention-and-transformers-a-mathematical-introduction/images/002.webp" alt="From Attention to Self-Attention and Transformers — a Mathematical Introduction">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/from-attention-to-self-attention-and-transformers-a-mathematical-introduction/index.html" class="listing-title">
+          From Attention to Self-Attention and Transformers — a Mathematical Introduction
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A formal introduction to the mathematics behind attention and self-attention mechanism
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 26, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            10 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="11" data-categories="RGVlcCUyMExlYXJuaW5nJTJDQ29tcHV0ZXIlMjBWaXNpb24lMkNOTFA=" data-listing-date-sort="1719349200000" data-listing-file-modified-sort="1795181065314" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1681">
+
+    
+      <a href="./posts/attention-what-is-it-and-how-it-works/index.html" class="article-card-image">
+        <img src="./posts/attention-what-is-it-and-how-it-works/images/007.webp" alt="Attention — What is It and How It Works">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">NLP</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/attention-what-is-it-and-how-it-works/index.html" class="listing-title">
+          Attention — What is It and How It Works
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Exploring the inner workings of attention mechanisms in deep learning
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jun 26, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            9 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="12" data-categories="RGVlcCUyMExlYXJuaW5nJTJDTWFjaGluZSUyMExlYXJuaW5nJTJDUHl0aG9u" data-listing-date-sort="1714078800000" data-listing-file-modified-sort="1795181065340" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1489">
+
+    
+      <a href="./posts/introduction-to-torch-metrics/index.html" class="article-card-image">
+        <img src="./posts/introduction-to-torch-metrics/images/001.webp" alt="Introduction to Torch Metrics">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Machine Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/introduction-to-torch-metrics/index.html" class="listing-title">
+          Introduction to Torch Metrics
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Track your metrics while training a deep learning model using the TorchMetrics library.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Apr 26, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            8 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="13" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNQeXRob24lMkNTdGF0aXN0aWNz" data-listing-date-sort="1711832400000" data-listing-file-modified-sort="1795181065365" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3470">
+
+    
+      <a href="./posts/object-tracking-using-particle-filter/index.html" class="article-card-image">
+        <img src="./posts/object-tracking-using-particle-filter/images/002.webp" alt="Object Tracking Using Particle Filter">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/object-tracking-using-particle-filter/index.html" class="listing-title">
+          Object Tracking Using Particle Filter
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          While there are many algorithms for object tracking, including newer deep learning-based ones, the particle filter is still an interesting algorithm for this task.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Mar 31, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            18 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="14" data-categories="UHl0aG9uJTJDUGFuZGFzJTJDRGF0YSUyMFNjaWVuY2U=" data-listing-date-sort="1708725600000" data-listing-file-modified-sort="1795181065377" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="809">
+
+    
+      <a href="./posts/ten-more-tips-and-tricks-for-pandas/index.html" class="article-card-image">
+        <img src="./posts/ten-more-tips-and-tricks-for-pandas/images/001.webp" alt="Ten More Tips and Tricks for Pandas">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Pandas</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/ten-more-tips-and-tricks-for-pandas/index.html" class="listing-title">
+          Ten More Tips and Tricks for Pandas
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Ten quick and useful tips and tricks for Pandas
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Feb 24, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            5 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="15" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNQeXRvcmNoJTJDUHl0aG9uJTJDRGVlcCUyMExlYXJuaW5nJTJDTWFjaGluZSUyMExlYXJuaW5n" data-listing-date-sort="1705010400000" data-listing-file-modified-sort="1795181065381" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1110">
+
+    
+      <a href="./posts/torchvision-transforms-v2-an-updated-library-for-image-augmentation/index.html" class="article-card-image">
+        <img src="./posts/torchvision-transforms-v2-an-updated-library-for-image-augmentation/images/003.webp" alt="TorchVision Transforms V2 — an Updated Library for Image Augmentation">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Pytorch</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Machine Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/torchvision-transforms-v2-an-updated-library-for-image-augmentation/index.html" class="listing-title">
+          TorchVision Transforms V2 — an Updated Library for Image Augmentation
+        </a>
+      </h3>
+
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jan 12, 2024</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            6 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="16" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNEZWVwJTIwTGVhcm5pbmclMkNEYXRhJTIwU2NpZW5jZSUyQ1B5dGhvbiUyQ01hY2hpbmUlMjBMZWFybmluZw==" data-listing-date-sort="1703282400000" data-listing-file-modified-sort="1795181065382" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="36" data-listing-word-count-sort="7107">
+
+    
+      <a href="./posts/transfer-learning-with-yolov8-a-case-study/index.html" class="article-card-image">
+        <img src="./posts/transfer-learning-with-yolov8-a-case-study/images/001.webp" alt="Transfer Learning with YOLOv8 — a Case Study">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Machine Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/transfer-learning-with-yolov8-a-case-study/index.html" class="listing-title">
+          Transfer Learning with YOLOv8 — a Case Study
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this post, we will look at a case study where we aim to use YOLOv8 to detect white blood cells in images.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Dec 23, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            36 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="17" data-categories="UHl0aG9u" data-listing-date-sort="1699480800000" data-listing-file-modified-sort="1795181065370" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1620">
+
+    
+      <a href="./posts/python-logging-module /index.html" class="article-card-image">
+        <img src="./posts/python-logging-module /images/001.webp" alt="Python Logging Module">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/python-logging-module /index.html" class="listing-title">
+          Python Logging Module
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A better way to debug and track errors.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Nov 9, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            9 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="18" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZyUyQ1B5dGhvbg==" data-listing-date-sort="1696712400000" data-listing-file-modified-sort="1795181065383" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2262">
+
+    
+      <a href="./posts/variational-autoencoder/index.html" class="article-card-image">
+        <img src="./posts/variational-autoencoder/images/002.webp" alt="Variational Autoencoder">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/variational-autoencoder/index.html" class="listing-title">
+          Variational Autoencoder
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Understanding and Implementing Variational Autoencoders
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Oct 8, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            12 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="19" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDUHJvYmFiaWxpdHklMkNTdGF0aXN0aWNzJTJDRGF0YSUyMFNjaWVuY2U=" data-listing-date-sort="1696194000000" data-listing-file-modified-sort="1795181065383" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1487">
+
+    
+      <a href="./posts/variational-inference-or-how-to-estimate-unknown-probability-function-2/index.html" class="article-card-image">
+        <img src="./posts/variational-inference-or-how-to-estimate-unknown-probability-function-2/images/001.webp" alt="Variational Inference — or How to Estimate Unknown Probability Function 2">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Machine Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Probability</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/variational-inference-or-how-to-estimate-unknown-probability-function-2/index.html" class="listing-title">
+          Variational Inference — or How to Estimate Unknown Probability Function 2
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A Practical Guide to Variational Inference
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Oct 2, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            8 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="20" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDUHJvYmFiaWxpdHklMkNEYXRhJTIwU2NpZW5jZSUyQ1B5dGhvbiUyQ1N0YXRpc3RpY3M=" data-listing-date-sort="1695762000000" data-listing-file-modified-sort="1795181065347" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1929">
+
+    
+      <a href="./posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/index.html" class="article-card-image">
+        <img src="./posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/images/004.webp" alt="Markov Chain Monte Carlo — or How to Estimate Unknown Probability Function">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Machine Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Probability</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/index.html" class="listing-title">
+          Markov Chain Monte Carlo — or How to Estimate Unknown Probability Function
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A practical guide to MCMC methods
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 27, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            10 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="21" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1694984400000" data-listing-file-modified-sort="1795181065336" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="918">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-7/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-7/images/cover.webp" alt="Intro to Diffusion Model — Part 7">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-7/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 7
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this final post in the series, we are going to train our diffusion model and see the results.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 18, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            5 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="22" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1694898000000" data-listing-file-modified-sort="1795181065334" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="771">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-6/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-6/images/cover.webp" alt="Intro to Diffusion Model — Part 6">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-6/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 6
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this post, we are going to focus on sampling from the reverse process.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 17, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            4 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="23" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1694811600000" data-listing-file-modified-sort="1795181065333" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2747">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-5/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-5/images/cover.webp" alt="Intro to Diffusion Model — Part 5">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-5/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 5
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this post, we are going to focus on the diffusion model itself. We introduce its building blocks and compose a U-Net using these blocks for the full diffusion model.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 16, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            14 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="24" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1694725200000" data-listing-file-modified-sort="1795181065330" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="941">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-4/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-4/images/cover.webp" alt="Intro to Diffusion Model — Part 4">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-4/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 4
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this post, we are going to talk more about the forward process. We define the noise schedule and write some code to implement this process.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 15, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            5 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="25" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1694638800000" data-listing-file-modified-sort="1795181065329" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2311">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-3/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-3/images/cover.webp" alt="Intro to Diffusion Model — Part 3">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-3/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 3
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this post, we are going to develop mathematically the loss function of the diffusion model in detail and introduce the training algorithm.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 14, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            12 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="26" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ0RlZXAlMjBMZWFybmluZw==" data-listing-date-sort="1694206800000" data-listing-file-modified-sort="1795181065327" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1060">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-2/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-2/images/cover.webp" alt="Intro to Diffusion Model — Part 2">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-2/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 2
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Part 2 of a series of posts about the diffusion model. In this post, we will go over the mathematics that describe the forward and reverse processes of the diffusion model.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 9, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            6 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="27" data-categories="QUklMkNEZWVwJTIwTGVhcm5pbmclMkNDb21wdXRlciUyMFZpc2lvbg==" data-listing-date-sort="1693861200000" data-listing-file-modified-sort="1795181065326" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="830">
+
+    
+      <a href="./posts/intro-to-diffusion-model-part-1/index.html" class="article-card-image">
+        <img src="./posts/intro-to-diffusion-model-part-1/images/cover.webp" alt="Intro to Diffusion Model — Part 1">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Computer Vision</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/intro-to-diffusion-model-part-1/index.html" class="listing-title">
+          Intro to Diffusion Model — Part 1
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Part 1 of a series of posts about the diffusion model. This part will introduce the key ideas of the model, explain the main differences from other image generative models, and briefly describe the two processes of the diffusion model.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 5, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            5 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="28" data-categories="TWFjaGluZSUyMExlYXJuaW5nJTJDRGF0YSUyMFNjaWVuY2UlMkNQeXRob24=" data-listing-date-sort="1693602000000" data-listing-file-modified-sort="1795181065346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1371">
+
+    
+      <a href="./posts/linear-regression-with-gradient-descent-from-scratch/index.html" class="article-card-image">
+        <img src="./posts/linear-regression-with-gradient-descent-from-scratch/images/003.gif" alt="Linear Regression with Gradient Descent from Scratch">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Machine Learning</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/linear-regression-with-gradient-descent-from-scratch/index.html" class="listing-title">
+          Linear Regression with Gradient Descent from Scratch
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A step-by-step guide to implementing linear regression from scratch with gradient descent in Python, including mathematical derivations.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Sep 2, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            7 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="29" data-categories="UHl0aG9u" data-listing-date-sort="1693256400000" data-listing-file-modified-sort="1795181065320" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="559">
+
+    
+      <a href="./posts/five-fun-and-interesting-behaviors-of-python/index.html" class="article-card-image">
+        <img src="./posts/five-fun-and-interesting-behaviors-of-python/images/001.webp" alt="Five Fun and Interesting Behaviors of Python">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/five-fun-and-interesting-behaviors-of-python/index.html" class="listing-title">
+          Five Fun and Interesting Behaviors of Python
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          In this post, we are going to look at some interesting and sometimes surprising behaviors of the Python language.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 29, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            3 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="30" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNQeXRob24=" data-listing-date-sort="1692651600000" data-listing-file-modified-sort="1795181065323" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2158">
+
+    
+      <a href="./posts/harris-corners-detector -from-theory-to-code/index.html" class="article-card-image">
+        <img src="./posts/harris-corners-detector -from-theory-to-code/images/008.webp" alt="Harris Corners Detector — from Theory to Code">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/harris-corners-detector -from-theory-to-code/index.html" class="listing-title">
+          Harris Corners Detector — from Theory to Code
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Harris corners detector is a popular algorithm for finding interest points in an image. In this post, we go over the theory and the mathematics behind the algorithm and implement it using Python.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 22, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            11 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="31" data-categories="RGF0YSUyMFNjaWVuY2UlMkNQeXRob24lMkNQYW5kYXM=" data-listing-date-sort="1692046800000" data-listing-file-modified-sort="1795181065379" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="772">
+
+    
+      <a href="./posts/ten-tips-and-tricks-for-pandas /index.html" class="article-card-image">
+        <img src="./posts/ten-tips-and-tricks-for-pandas /images/001.webp" alt="Ten Tips and Tricks for Pandas">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Pandas</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/ten-tips-and-tricks-for-pandas /index.html" class="listing-title">
+          Ten Tips and Tricks for Pandas
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Ten quick and useful tips and tricks for Pandas
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 15, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            4 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="32" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNBSSUyQ1B5dGhvbiUyQ1B5VG9yY2g=" data-listing-date-sort="1691787600000" data-listing-file-modified-sort="1795181065317" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="33" data-listing-word-count-sort="6568">
+
+    
+      <a href="./posts/deepfake-face-swap-in-video-with-pytorch-and-opencv/index.html" class="article-card-image">
+        <img src="./posts/deepfake-face-swap-in-video-with-pytorch-and-opencv/images/006.webp" alt="DeepFake Face-Swap in Video with Pytorch and OpenCV">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">AI</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">PyTorch</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/deepfake-face-swap-in-video-with-pytorch-and-opencv/index.html" class="listing-title">
+          DeepFake Face-Swap in Video with Pytorch and OpenCV
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          A Practical Guide to Designing a Lightweight Face-Swap System
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 12, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            33 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="33" data-categories="UHJvYmFiaWxpdHklMkNTdGF0aXN0aWNzJTJDRGF0YSUyMFNjaWVuY2U=" data-listing-date-sort="1691528400000" data-listing-file-modified-sort="1795181065371" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="168">
+
+    
+      <a href="./posts/quick-probability-the-union-bound /index.html" class="article-card-image">
+        <img src="./posts/quick-probability-the-union-bound /images/cover.webp" alt="Quick Probability: The Union Bound">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Probability</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/quick-probability-the-union-bound /index.html" class="listing-title">
+          Quick Probability: The Union Bound
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Learn how to establish probability bounds when exact calculations are too difficult, featuring a complete proof by induction.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 9, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            1 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="34" data-listing-date-sort="1691442000000" data-listing-file-modified-sort="1795181065370" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="378">
+
+    
+      <a href="./posts/quick-probability-the-birthday-paradox/index.html" class="article-card-image">
+        <img src="./posts/quick-probability-the-birthday-paradox/images/001.webp" alt="Quick Probability: The Birthday Paradox">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/quick-probability-the-birthday-paradox/index.html" class="listing-title">
+          Quick Probability: The Birthday Paradox
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          How high is the probability of having another person in your group with the same birthday?
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 8, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            2 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="35" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNQeXRob24lMkNPYmplY3QlMjBEZXRlY3Rpb24lMkNEZWVwJTIwTGVhcm5pbmc=" data-listing-date-sort="1691182800000" data-listing-file-modified-sort="1795181065375" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="19" data-listing-word-count-sort="3757">
+
+    
+      <a href="./posts/single-object-detection-with-pytorch-step-by-step/index.html" class="article-card-image">
+        <img src="./posts/single-object-detection-with-pytorch-step-by-step/images/001.webp" alt="Single Object Detection with PyTorch Step-by-Step">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Object Detection</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Deep Learning</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/single-object-detection-with-pytorch-step-by-step/index.html" class="listing-title">
+          Single Object Detection with PyTorch Step-by-Step
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Learn how to build a custom PyTorch model from scratch to locate objects in images, from data exploration to custom neural networks
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 5, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            19 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="36" data-categories="U3RhdGlzdGljcyUyQ0RhdGElMjBTY2llbmNlJTJDUHl0aG9u" data-listing-date-sort="1690837200000" data-listing-file-modified-sort="1795181065363" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1146">
+
+    
+      <a href="./posts/monte-carlo-simulation-with-matplotlib-animation/index.html" class="article-card-image">
+        <img src="./posts/monte-carlo-simulation-with-matplotlib-animation/images/003.gif" alt="Monte Carlo Simulation with Matplotlib Animation">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Statistics</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/monte-carlo-simulation-with-matplotlib-animation/index.html" class="listing-title">
+          Monte Carlo Simulation with Matplotlib Animation
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Learn how to bring random sampling to life by building dynamic, animated Monte Carlo simulations with Python.
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Aug 1, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            6 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="37" data-categories="UHJvYmFiaWxpdHklMkNTdGF0aXN0aWNzJTJDRGF0YSUyMFNjaWVuY2U=" data-listing-date-sort="1690664400000" data-listing-file-modified-sort="1795181065312" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1236">
+
+    
+      <a href="./posts/Markov-Chain/index.html" class="article-card-image">
+        <img src="./posts/Markov-Chain/images/cover.webp" alt="Markov Chain">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Probability</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Data Science</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/Markov-Chain/index.html" class="listing-title">
+          Markov Chain
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          An introduction to Markov chain and its properties
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 30, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            7 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="38" data-categories="UHJvYmFiaWxpdHklMkNTdGF0aXN0aWNz" data-listing-date-sort="1690318800000" data-listing-file-modified-sort="1795181065337" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1265">
+
+    
+      <a href="./posts/introduction-to-conditional-probability/index.html" class="article-card-image">
+        <img src="./posts/introduction-to-conditional-probability/images/001.webp" alt="Introduction to Conditional Probability">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Probability</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/introduction-to-conditional-probability/index.html" class="listing-title">
+          Introduction to Conditional Probability
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Understanding the Basics of Conditional Probability and Bayes’ Theorem
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 26, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            7 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="39" data-categories="Q29tcHV0ZXIlMjBWaXNpb24lMkNJbWFnZSUyMFByb2Nlc3NpbmclMkNQeXRob24lMkNPcGVuQ1Y=" data-listing-date-sort="1690059600000" data-listing-file-modified-sort="1795181065324" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2046">
+
+    
+      <a href="./posts/how-to-use-connected-components to-find-sunspots/index.html" class="article-card-image">
+        <img src="./posts/how-to-use-connected-components to-find-sunspots/images/cover.webp" alt="How to Use Connected Components to Find Sunspots">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Image Processing</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Python</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">OpenCV</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/how-to-use-connected-components to-find-sunspots/index.html" class="listing-title">
+          How to Use Connected Components to Find Sunspots
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Detecting Sunspots Using Python and OpenCV
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 23, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            11 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="40" data-categories="UHl0aG9u" data-listing-date-sort="1689714000000" data-listing-file-modified-sort="1795181065369" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="563">
+
+    
+      <a href="./posts/pathlib-a-Better-Way-to-Work-with-Paths-in-Python/index.html" class="article-card-image">
+        <img src="./posts/pathlib-a-Better-Way-to-Work-with-Paths-in-Python/images/cover.webp" alt="pathlib — a Better Way to Work with Paths in Python">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Python</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/pathlib-a-Better-Way-to-Work-with-Paths-in-Python/index.html" class="listing-title">
+          pathlib — a Better Way to Work with Paths in Python
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Time to upgrade your path handling in Python
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 19, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            3 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="41" data-categories="Q29tcHV0ZXIlMjBWaXNpb24=" data-listing-date-sort="1689714000000" data-listing-file-modified-sort="1795181065312" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="543">
+
+    
+      <a href="./posts/depth-from-a-stereo-cameras-system/index.html" class="article-card-image">
+        <img src="./posts/depth-from-a-stereo-cameras-system/images/cover.webp" alt="Depth from a Stereo Cameras System">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Computer Vision</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/depth-from-a-stereo-cameras-system/index.html" class="listing-title">
+          Depth from a Stereo Cameras System
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          How can we find depth using only cameras
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 19, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            3 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+  <article class="article-card" data-index="42" data-categories="UHJvYmFiaWxpdHklMkNTdGF0aXN0aWNz" data-listing-date-sort="1689627600000" data-listing-file-modified-sort="1795181065311" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="702">
+
+    
+      <a href="./posts/Basic-Probability-Expectation-and-Variance/index.html" class="article-card-image">
+        <img src="./posts/Basic-Probability-Expectation-and-Variance/cover.webp" alt="Basic Probability: Expectation and Variance">
+      </a>
+    
+
+    <div class="article-card-content">
+
+      
+        <div class="listing-categories">
+          
+            
+            <span class="article-category">Probability</span>
+          
+            
+              <span class="category-separator">·</span>
+            
+            <span class="article-category">Statistics</span>
+          
+        </div>
+      
+
+      <h3 class="article-title anchored">
+        <a href="./posts/Basic-Probability-Expectation-and-Variance/index.html" class="listing-title">
+          Basic Probability: Expectation and Variance
+        </a>
+      </h3>
+
+      
+        <p class="article-subtitle listing-subtitle">
+          Introduction to the basic ideas of expectation and variance in probability
+        </p>
+      
+
+      <div class="article-meta">
+        
+          <span class="listing-author">Dor Zvulun</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-date">Jul 18, 2023</span>
+        
+
+        
+          <span class="meta-separator">·</span>
+          <span class="listing-reading-time">
+            4 min read
+          </span>
+        
+      </div>
+
+    </div>
+  </article>
+
+</div>
+<div class="listing-no-matching d-none">No matching items</div>
+<nav id="article-listing-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
+</div>
+
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dorzv\.github\.io\/data-notes\/");
+      const newWindowLabel = "(opens in a new tab)";
+      const newWindowNoteId = "quarto-ext-newwindow-label";
+      // Links reference one hidden label through aria-describedby, so the
+      // announcement never changes their accessible name.
+      var describeNewWindow = (link) => {
+        if (!window.document.getElementById(newWindowNoteId)) {
+          var newWindowNote = window.document.createElement("span");
+          newWindowNote.id = newWindowNoteId;
+          newWindowNote.hidden = true;
+          newWindowNote.textContent = newWindowLabel;
+          window.document.body.appendChild(newWindowNote);
+        }
+        var describedBy = (link.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+        if (!describedBy.includes(newWindowNoteId)) {
+          describedBy.push(newWindowNoteId);
+          link.setAttribute("aria-describedby", describedBy.join(" "));
+        }
+      }
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            describeNewWindow(link);
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Data Notes</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="./about.html">
+<p>About</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/dorzv/ComputerVision/">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
