@@ -159,4 +159,4 @@ You can see, for example, how the word “bird” attends to the image part of t
 
 In this post, we went over the basic ideas behind the attention mechanism. We saw how it solved the problem of handling long sentences in the encoder-decoder architecture for translation by constructing a new context vector at each step by attending to the most relevant part of the encoder. We also saw how we can leverage the attention mechanism to the task of image captioning, where the attention helps to focus on the relevant part of the image for the prediction of the next word in the caption.
 
-In a future post, we will go over the mathematics of attention and introduce the self-attention module.
+In a [future post](../from-attention-to-self-attention-and-transformers-a-mathematical-introduction/index.qmd), we will go over the mathematics of attention and introduce the self-attention module.
