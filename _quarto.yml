@@ -9,6 +9,8 @@ website:
   description: "Practical writing about computer vision, deep learning and data science."
   site-url: https://dorzv.github.io/data-notes/
   favicon: "images/favicon.png"
+  open-graph: true
+  twitter-card: true
 
   navbar:
     background: "#244f68"
