@@ -8,6 +8,7 @@
 
 <meta name="author" content="Dor Zvulun">
 <meta name="dcterms.date" content="2024-03-31">
+<meta name="description" content="An introduction to object tracking using the particle filter algorithm, explaining the prediction and correction steps">
 
 <title>Object Tracking Using Particle Filter – Data Notes</title>
 <style>
@@ -145,6 +146,14 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Object Tracking Using Particle Filter – Data Notes">
+<meta property="og:description" content="While there are many algorithms for object tracking, including newer deep learning-based ones, the particle filter is still an interesting algorithm for this task.">
+<meta property="og:image" content="https://dorzv.github.io/data-notes/posts/object-tracking-using-particle-filter/images/002.webp">
+<meta property="og:site_name" content="Data Notes">
+<meta name="twitter:title" content="Object Tracking Using Particle Filter – Data Notes">
+<meta name="twitter:description" content="While there are many algorithms for object tracking, including newer deep learning-based ones, the particle filter is still an interesting algorithm for this task.">
+<meta name="twitter:image" content="https://dorzv.github.io/data-notes/posts/object-tracking-using-particle-filter/images/002.webp">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
@@ -261,7 +270,7 @@ P(X_t \vert{} X_0, \dots, X_{t-1}, Y_0, \dots, Y_{t-1})
 <p><span class="math display">\[
 P(X_t \vert{} X_0, \dots, X_{t-1}, Y_0, \dots, Y_{t-1}, Y_t)
 \]</span></p>
-<p>In practice, we are going to simplify this by assuming the process is <a href="../markov-chain/index.qmd">Markovian</a>, which means it only depends on the previous time step. So, the belief about the current state only depends on the previous step’s state.</p>
+<p>In practice, we are going to simplify this by assuming the process is <a href="../../posts/markov-chain/index.html">Markovian</a>, which means it only depends on the previous time step. So, the belief about the current state only depends on the previous step’s state.</p>
 <p><span class="math display">\[
 P(X_t \vert{} X_{t-1})
 \]</span></p>

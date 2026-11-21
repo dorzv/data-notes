@@ -8,6 +8,7 @@
 
 <meta name="author" content="Dor Zvulun">
 <meta name="dcterms.date" content="2023-09-27">
+<meta name="description" content="A practical guide to Markov Chain Monte Carlo (MCMC) methods for estimating unknown probability distributions">
 
 <title>Markov Chain Monte Carlo — or How to Estimate Unknown Probability Function – Data Notes</title>
 <style>
@@ -145,6 +146,14 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Markov Chain Monte Carlo — or How to Estimate Unknown Probability Function – Data Notes">
+<meta property="og:description" content="A practical guide to MCMC methods">
+<meta property="og:image" content="https://dorzv.github.io/data-notes/posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/images/004.webp">
+<meta property="og:site_name" content="Data Notes">
+<meta name="twitter:title" content="Markov Chain Monte Carlo — or How to Estimate Unknown Probability Function – Data Notes">
+<meta name="twitter:description" content="A practical guide to MCMC methods">
+<meta name="twitter:image" content="https://dorzv.github.io/data-notes/posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/images/004.webp">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
@@ -259,7 +268,7 @@ p(x) = \int_{\theta} p(x\vert{}\theta)p(\theta)d\theta
 \]</span></p>
 <p>In some simple cases (especially in low dimensions), we can compute that integral, but in higher dimensions, it may become intractable. So, instead of computing <span class="math inline">\(p(\theta\vert{}x)\)</span> directly, we need to use some approximation.</p>
 <p>There are two main approaches to tackling this problem. The first one is the Markov Chain Monte Carlo (MCMC), which is based on sampling from the unknown distribution, and we are going to deal with in this post. The second one is the Variational Inference, which is an approximation-based approach.</p>
-<p>Before we continue, if you want to recall what Markov Chain and Monte Carlo are, you can read about them in my previous posts <a href="../markov-chain/index.qmd">here</a> and <a href="../../posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/index.html">here</a>.</p>
+<p>Before we continue, if you want to recall what Markov Chain and Monte Carlo are, you can read about them in my previous posts <a href="../../posts/markov-chain/index.html">here</a> and <a href="../../posts/markov-chain-monte-carlo-or-how-to-estimate-unknown-probability-function/index.html">here</a>.</p>
 <section id="markov-chain-monte-carlo" class="level2">
 <h2 class="anchored" data-anchor-id="markov-chain-monte-carlo">Markov Chain Monte Carlo</h2>
 <p>As described earlier, we have some unknown probability density function (<span class="math inline">\(p(\theta\vert{}x)\)</span>) we know up to a normalization factor (<span class="math inline">\(p(x)\)</span>). That means we have some unknown distribution function <span class="math inline">\(q(x)\)</span> and some known distribution <span class="math inline">\(f(x)\)</span> such that <span class="math inline">\(q(x) \propto f(x)\)</span>. We want to sample from the unknown distribution so we can estimate it. In the MCMC approach, we want to sample a new data point in a way that depends on the previous sample. The concept of a new state based only on the previous step is the main idea of the Markov Chain. The Monte Carlo part comes from the simulated sampling from the unknown distribution.</p>
