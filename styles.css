@@ -685,3 +685,12 @@ div.sourceCode pre {
   background: #e5e9ec;
   color: var(--brand);
 }
+
+@media (max-width: 600px) {
+  .quarto-title-meta-share {
+    position: static;
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 0.5rem;
+  }
+}
