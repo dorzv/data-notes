@@ -53,7 +53,9 @@ format:
     anchor-sections: true
     link-external-newwindow: true
     canonical-url: true
-    include-after-body: _cloudflare.html
+    include-after-body: 
+      - _includes/share-button.html
+      - _cloudflare.html
     include-in-header:
       - text: |
           <meta name="google-site-verification" content="jf7LNHuaUy48DsohM2yW3gcgo8JLr5KKaE69EGvLqYA" />

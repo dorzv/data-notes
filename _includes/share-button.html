@@ -1,0 +1,36 @@
+
+<div class="quarto-title-meta-share">
+  <button id="share-button" aria-label="Share this article" title="Share this article">
+  <i class="bi bi-share"></i>
+  <span>Share</span>
+</button>
+</div>
+
+<script>
+// Move the share button into the article metadata row
+const shareButton = document.querySelector(".quarto-title-meta-share");
+const metadata = document.querySelector(".quarto-title-meta");
+
+if (shareButton && metadata) {
+  metadata.appendChild(shareButton);
+}
+
+// Handle sharing
+document.getElementById("share-button")?.addEventListener("click", async () => {
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: document.title,
+        url: window.location.href
+      });
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("Link copied!");
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      console.error("Sharing failed:", error);
+    }
+  }
+});
+</script>
