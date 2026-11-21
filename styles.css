@@ -652,3 +652,36 @@ div.sourceCode pre {
   width: 1.4rem;
   height: 1.4rem;
 }
+
+/* share button */
+
+.quarto-title-meta {
+  position: relative;
+}
+
+.quarto-title-meta-share {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+}
+
+.quarto-title-meta-share button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f1f3f5;
+  border: none;
+  border-radius: 20px;
+  box-shadow: none;
+  padding: 0.4rem 0.75rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s ease;
+}
+
+.quarto-title-meta-share button:hover {
+  background: #e5e9ec;
+  color: var(--brand);
+}
