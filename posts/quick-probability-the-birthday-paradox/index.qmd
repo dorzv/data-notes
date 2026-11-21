@@ -1,6 +1,7 @@
 ---
 title: "Quick Probability: The Birthday Paradox"
 subtitle: "How high is the probability of having another person in your group with the same birthday?"
+description-meta: "An exploration of the birthday paradox and the probability of shared birthdays in a group"
 author: "Dor Zvulun"
 date: "2023-08-08"
 image: "images/001.webp"

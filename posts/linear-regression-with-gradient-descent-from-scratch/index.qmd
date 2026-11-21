@@ -1,6 +1,7 @@
 ---
 title: "Linear Regression with Gradient Descent from Scratch"
 subtitle: "A step-by-step guide to implementing linear regression from scratch with gradient descent in Python, including mathematical derivations."
+description-meta: "A step-by-step guide to implementing linear regression from scratch with gradient descent in Python, including mathematical derivations."
 author: "Dor Zvulun"
 date: "2023-09-02"
 categories: [Machine Learning, Data Science, Python]

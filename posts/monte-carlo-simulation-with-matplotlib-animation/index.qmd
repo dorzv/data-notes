@@ -1,6 +1,7 @@
 ---
 title: "Monte Carlo Simulation with Matplotlib Animation"
 subtitle: "Learn how to bring random sampling to life by building dynamic, animated Monte Carlo simulations with Python."
+description-meta: "A guide to creating dynamic Monte Carlo simulations with Matplotlib animations in Python"
 author: "Dor Zvulun"
 date: "2023-08-01"
 categories:

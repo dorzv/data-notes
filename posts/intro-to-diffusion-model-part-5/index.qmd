@@ -1,6 +1,7 @@
 ---
 title: "Intro to Diffusion Model — Part 5"
 subtitle: "In this post, we are going to focus on the diffusion model itself. We introduce its building blocks and compose a U-Net using these blocks for the full diffusion model."
+description-meta: "Building the diffusion model network using U-Net architecture and its basic building blocks"
 author: "Dor Zvulun"
 date: "2023-09-16"
 categories: [Computer Vision, AI, Deep Learning]

@@ -1,6 +1,7 @@
 ---
 title: "CLIP — Contrastive Language-Image Pre-training"
 subtitle: "Breaking the Single-Modality Barrier"
+description-meta: "Understanding CLIP and its approach to multimodal learning through contrastive language-image pre-training"
 author: "Dor Zvulun"
 date: "2026-08-04"
 categories: [AI, Computer Vision, NLP, Deep Learning]

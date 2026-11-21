@@ -1,6 +1,7 @@
 ---
 title: "Markov Chain"
 subtitle: "An introduction to Markov chain and its properties"
+description-meta: "An introduction to Markov chains, their properties, and how to analyze their behavior over time"
 author: "Dor Zvulun"
 date: "2023-07-30"
 categories: [Probability, Statistics, Data Science]

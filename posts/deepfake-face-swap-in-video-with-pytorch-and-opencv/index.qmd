@@ -1,6 +1,7 @@
 ---
 title: "DeepFake Face-Swap in Video with Pytorch and OpenCV"
 subtitle: "A Practical Guide to Designing a Lightweight Face-Swap System"
+description-meta: "A step-by-step guide to building a lightweight deepfake face-swap system using PyTorch and OpenCV"
 author: "Dor Zvulun"
 date: "2023-08-12"
 categories: [Computer Vision, AI, Python, PyTorch]

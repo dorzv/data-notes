@@ -1,6 +1,7 @@
 ---
 title: "Paper Review: Bootstrap Your Own Latent (BYOL)"
 subtitle: "A New Approach to Self-Supervised Learning"
+description-meta: "A review of the BYOL (Bootstrap Your Own Latent) method for self-supervised learning, highlighting its advantages over contrastive learning"
 author: "Dor Zvulun"
 date: "2024-11-29"
 categories: [Computer Vision, Data Science, Deep Learning]

@@ -1,6 +1,7 @@
 ---
 title: "Intro to Diffusion Model — Part 3"
 subtitle: "In this post, we are going to develop mathematically the loss function of the diffusion model in detail and introduce the training algorithm."
+description-meta: "A mathematical derivation of the diffusion model's loss function and the corresponding training algorithm"
 author: "Dor Zvulun"
 date: "2023-09-14"
 categories: [Computer Vision, AI, Deep Learning]

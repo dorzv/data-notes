@@ -1,6 +1,7 @@
 ---
 title: "Self-Supervised Learning for Visual Representation"
 subtitle: "How we can improve our models by using unlabeled data."
+description-meta: "An introduction to self-supervised learning for visual representation, including contrastive learning and the SimCLR architecture"
 author: "Dor Zvulun"
 date: "2024-09-28"
 categories: [Computer Vision, Deep Learning]

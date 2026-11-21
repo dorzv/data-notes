@@ -1,5 +1,7 @@
 ---
 title: "TorchVision Transforms V2 — an Updated Library for Image Augmentation"
+subtitle: "Exploring the updated Transforms V2 module in torchvision"
+description-meta: "A guide to the new Transforms V2 module in torchvision 0.15, highlighting its features and usage for image, video, and object detection augmentation"
 author: "Dor Zvulun"
 date: "2024-01-12"
 categories: [Computer Vision, Pytorch, Python, Deep Learning, Machine Learning]

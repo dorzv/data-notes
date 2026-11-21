@@ -1,6 +1,7 @@
 ---
 title: "DETR: End-to-End Object Detection with Transformers"
 subtitle: "The Future of Object Detection with Transformers"
+description-meta: "An in-depth look at DETR, the transformer-based approach to end-to-end object detection"
 author: "Dor Zvulun"
 date: "2025-02-28"
 categories: [Computer Vision, AI, Data Science, Machine Learning]

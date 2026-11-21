@@ -1,6 +1,7 @@
 ---
 title: "Migrating from Pandas to Polars: A Comprehensive Guide"
 subtitle: "Discovering the Benefits of Polars over Pandas"
+description-meta: "A comprehensive guide to migrating from Pandas to Polars, highlighting performance, memory efficiency, and API differences"
 author: "Dor Zvulun"
 date: "2025-03-29"
 categories: [Data Science, Pandas, Python]

@@ -1,6 +1,7 @@
 ---
 title: "From Attention to Self-Attention and Transformers — a Mathematical Introduction"
 subtitle: "A formal introduction to the mathematics behind attention and self-attention mechanism"
+description-meta: "A mathematical exploration of attention, self-attention, and the Transformer architecture"
 author: "Dor Zvulun"
 date: "2024-07-26"
 categories: [Deep Learning, Data Science]

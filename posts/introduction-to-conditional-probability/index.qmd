@@ -1,6 +1,7 @@
 ---
 title: "Introduction to Conditional Probability"
 subtitle: "Understanding the Basics of Conditional Probability and Bayes’ Theorem"
+description-meta: "An introduction to conditional probability, independence of events, and Bayes’ theorem"
 author: "Dor Zvulun"
 date: "2023-07-26"
 categories: [Probability, Statistics]

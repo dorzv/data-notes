@@ -1,6 +1,7 @@
 ---
 title: "Object Tracking Using Particle Filter"
 subtitle: "While there are many algorithms for object tracking, including newer deep learning-based ones, the particle filter is still an interesting algorithm for this task."
+description-meta: "An introduction to object tracking using the particle filter algorithm, explaining the prediction and correction steps"
 author: "Dor Zvulun"
 date: "2024-03-31"
 categories: [Computer Vision, Python, Statistics]

@@ -1,6 +1,7 @@
 ---
 title: "Single Object Detection with PyTorch Step-by-Step"
 subtitle: "Learn how to build a custom PyTorch model from scratch to locate objects in images, from data exploration to custom neural networks"
+description-meta: "A step-by-step guide to single-object detection using PyTorch, covering data exploration, preprocessing, and building custom neural networks"
 date: "2023-08-05"
 author: "Dor Zvulun"
 categories:

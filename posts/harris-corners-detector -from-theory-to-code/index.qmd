@@ -1,6 +1,7 @@
 ---
 title: "Harris Corners Detector — from Theory to Code"
 subtitle: "Harris corners detector is a popular algorithm for finding interest points in an image. In this post, we go over the theory and the mathematics behind the algorithm and implement it using Python."
+description-meta: "Understanding the theory and implementation of the Harris corners detector in computer vision"
 author: "Dor Zvulun"
 date: "2023-08-22"
 categories: [Computer Vision, Python]

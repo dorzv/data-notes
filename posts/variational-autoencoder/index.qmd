@@ -1,6 +1,7 @@
 ---
 title: "Variational Autoencoder"
 subtitle: "Understanding and Implementing Variational Autoencoders"
+description-meta: "Understanding and implementing Variational Autoencoders in deep learning"
 author: "Dor Zvulun"
 date: "2023-10-08"
 categories: [Computer Vision, AI, Deep Learning, Python]

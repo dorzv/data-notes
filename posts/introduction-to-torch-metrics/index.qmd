@@ -1,6 +1,7 @@
 ---
 title: "Introduction to Torch Metrics"
 subtitle: "Track your metrics while training a deep learning model using the TorchMetrics library."
+description-meta: "An introduction to the TorchMetrics library for tracking and computing metrics in PyTorch"
 author: "Dor Zvulun"
 date: "2024-04-26"
 categories: [Deep Learning, Machine Learning, Python]

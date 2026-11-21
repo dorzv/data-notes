@@ -1,6 +1,7 @@
 ---
 title: "Transfer Learning with YOLOv8 — a Case Study"
 subtitle: "In this post, we will look at a case study where we aim to use YOLOv8 to detect white blood cells in images."
+description-meta: "A case study on using YOLOv8 for white blood cell detection with transfer learning"
 author: "Dor Zvulun"
 date: "2023-12-23"
 categories: [Computer Vision, Deep Learning, Data Science, Python, Machine Learning]

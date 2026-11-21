@@ -1,6 +1,7 @@
 ---
 title: "Five Fun and Interesting Behaviors of Python"
 subtitle: "In this post, we are going to look at some interesting and sometimes surprising behaviors of the Python language."
+description-meta: "Exploring five fun and interesting behaviors of Python that may surprise you"
 author: "Dor Zvulun"
 date: "2023-08-29"
 categories: [Python]

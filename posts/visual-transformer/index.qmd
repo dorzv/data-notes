@@ -1,6 +1,7 @@
 ---
 title: "Visual Transformer (ViT)"
 subtitle: "An introduction to the Visual Transformer architecture, its main ideas and implementation."
+description-meta: "A guide to the Visual Transformer (ViT) architecture, explaining its key concepts, patch embeddings, and self-attention mechanism for image understanding."
 author: "Dor Zvulun"
 date: "2024-08-30"
 categories: [Computer Vision, Deep Learning, Python]

@@ -1,6 +1,7 @@
 ---
 title: "Depth from a Stereo Cameras System"
 subtitle: "How can we find depth using only cameras"
+description-meta: "Exploring how to determine depth using a stereo camera system"
 author: "Dor Zvulun"
 date: "2023-07-19"
 categories:

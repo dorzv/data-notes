@@ -1,6 +1,7 @@
 ---
 title: "The Different Types of Normalizations in Deep Learning"
 subtitle: "Exploring the Types of Normalization in Deep Learning and How They Work"
+description-meta: "An overview of different normalization techniques in deep learning, including batch normalization and layer normalization, and their impact on model training"
 author: "Dor Zvulun"
 date: "2025-01-31"
 categories: [Deep Learning, Data Science]

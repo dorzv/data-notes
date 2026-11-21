@@ -1,6 +1,7 @@
 ---
 title: "Introduction to TensorRT"
 subtitle: "How to accelerate deep learning inference time"
+description-meta: "An introduction to TensorRT and how to accelerate deep learning inference time on Nvidia GPUs"
 author: "Dor Zvulun"
 date: "2024-10-28"
 categories: [Deep Learning, Data Science, PyTorch]

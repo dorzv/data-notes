@@ -1,6 +1,7 @@
 ---
 title: "Ten Tips and Tricks for Pandas"
 subtitle: "Ten quick and useful tips and tricks for Pandas"
+description-meta: "Ten quick and useful tips and tricks for working with Pandas in Python"
 author: "Dor Zvulun"
 date: "2023-08-15"
 categories: [Data Science, Python, Pandas]

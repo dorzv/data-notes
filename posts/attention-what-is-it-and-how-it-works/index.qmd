@@ -1,6 +1,7 @@
 ---
 title: "Attention — What is It and How It Works"
 subtitle: "Exploring the inner workings of attention mechanisms in deep learning"
+description-meta: "Exploring the inner workings of attention mechanisms in deep learning"
 author: "Dor Zvulun"
 date: "2024-06-26"
 categories: [Deep Learning, Computer Vision, NLP]

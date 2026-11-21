@@ -1,6 +1,7 @@
 ---
 title: "Knowledge Distillation — How Networks Can Teach"
 subtitle: "An introduction to teacher-student models"
+description-meta: "An introduction to knowledge distillation and teacher-student models in deep learning"
 author: "Dor Zvulun"
 date: "2024-12-28"
 categories: [Deep Learning, Computer Vision, Machine Learning, Data Science, Python]

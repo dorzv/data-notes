@@ -1,6 +1,7 @@
 ---
 title: "How to Use Connected Components to Find Sunspots"
 subtitle: "Detecting Sunspots Using Python and OpenCV"
+description-meta: "A guide to detecting sunspots in solar images using connected components in Python"
 author: "Dor Zvulun"
 date: "2023-07-23"
 categories: [Computer Vision, Image Processing, Python, OpenCV]

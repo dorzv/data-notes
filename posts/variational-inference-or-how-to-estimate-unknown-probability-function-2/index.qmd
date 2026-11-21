@@ -1,6 +1,7 @@
 ---
 title: "Variational Inference — or How to Estimate Unknown Probability Function 2"
 subtitle: "A Practical Guide to Variational Inference"
+description-meta: "A practical guide to variational inference for approximating unknown probability distributions"
 author: "Dor Zvulun"
 date: "2023-10-02"
 categories: [Machine Learning, Probability, Statistics, Data Science]

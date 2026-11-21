@@ -1,6 +1,7 @@
 ---
 title: "pathlib — a Better Way to Work with Paths in Python"
 subtitle: "Time to upgrade your path handling in Python"
+description-meta: "A guide to using the pathlib module in Python for more intuitive and platform-independent path handling"
 author: "Dor Zvulun"
 date: "2023-07-19"
 categories: [Python]

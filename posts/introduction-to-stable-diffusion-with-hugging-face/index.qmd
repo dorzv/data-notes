@@ -1,6 +1,7 @@
 ---
 title: "Introduction to Stable Diffusion with Hugging Face"
 subtitle: "Build your own image generation pipeline with Stable Diffusion and Hugging Face Step-by-Step"
+description-meta: "A step-by-step guide to building an image generation pipeline using Stable Diffusion and Hugging Face"
 author: "Dor Zvulun"
 date: "2026-10-05"
 categories: [Deep Learning, Computer Vision, Stable Diffusion]

@@ -1,6 +1,7 @@
 ---
 title: "Python Logging Module"
 subtitle: "A better way to debug and track errors."
+description-meta: "An introduction to the Python logging module for effective debugging and error tracking"
 author: "Dor Zvulun"
 date: "2023-11-09"
 categories: [Python]
