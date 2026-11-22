@@ -54,7 +54,7 @@ Var[Y] &= Var[\mu + \sigma X] = Var[\sigma X] = \sigma^2 Var[X] = \sigma^2
 \end{aligned}
 $$
 
-If you are not sure why the equations above are true, you can check out this [post](../basic-Probability-Expectation-and-Variance/index.qmd) about the expectation and variance. The last results show that $Y$ is also a Gaussian random variable (since $X$ is) but with a mean $\mu$ and variance $\sigma^2$. As for our equation for $\mathbf{x}_t$, by the same principles, $\mathbf{x}_t$ is a Gaussian random variable (or a vector actually) with a mean of $\sqrt{1-\beta_t}\mathbf{x}_{t-1}$ (we assume we know $\mathbf{x}_{t-1}$ as we deal with conditional probability) and variance of $\beta_t$, which is exactly what we wrote in the first equation.
+If you are not sure why the equations above are true, you can check out this [post](../basic-probability-expectation-and-variance/index.qmd) about the expectation and variance. The last results show that $Y$ is also a Gaussian random variable (since $X$ is) but with a mean $\mu$ and variance $\sigma^2$. As for our equation for $\mathbf{x}_t$, by the same principles, $\mathbf{x}_t$ is a Gaussian random variable (or a vector actually) with a mean of $\sqrt{1-\beta_t}\mathbf{x}_{t-1}$ (we assume we know $\mathbf{x}_{t-1}$ as we deal with conditional probability) and variance of $\beta_t$, which is exactly what we wrote in the first equation.
 
 Although we found an equation for $\mathbf{x}_t$, we still need to calculate all the previous times since the equation is dependent on $\mathbf{x}_{t-1}$, and for calculating it, we need the previous time and so on, until $\mathbf{x}_0$. We can do better, but first, we need to introduce new notations.
 
